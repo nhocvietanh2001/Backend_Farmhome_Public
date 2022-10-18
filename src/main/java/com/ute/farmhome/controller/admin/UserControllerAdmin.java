@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserControllerAdmin {
     @Autowired
     private UserService userService;
-
     @PostMapping(value = "create", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> createUser(@RequestPart("user") String user) {
         UserCreateDTO userCreateDTO = userService.readJson(user);
