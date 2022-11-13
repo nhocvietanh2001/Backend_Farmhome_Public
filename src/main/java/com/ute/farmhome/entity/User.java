@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,7 +28,6 @@ public class User {
     @OneToOne
     @JoinColumn(name = "Status_id")
     private StatusUser status;
-    @OneToOne
-    @JoinColumn(name = "Role_Id")
-    private Role role;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Collection<Role> roles = new ArrayList<>();
 }

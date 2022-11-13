@@ -7,6 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,5 +25,5 @@ public class UserCreateDTO {
     private String email;
     private LocalDate createDate;
     private StatusUser status;
-    private Role role;
+    private Collection<Role> roles = new ArrayList<>();
 }

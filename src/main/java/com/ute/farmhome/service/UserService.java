@@ -7,4 +7,5 @@ import com.ute.farmhome.entity.User;
 public interface UserService {
     UserCreateDTO readJson(String user);
     User createUser(UserCreateDTO userCreateDTO);
+    User findByUsername(String username);
 }

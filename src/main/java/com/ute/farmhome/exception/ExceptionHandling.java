@@ -17,4 +17,10 @@ public class ExceptionHandling {
     public ResponseEntity handlerNotFound(Exception e, HttpServletRequest request) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
+
+    @ExceptionHandler(value = ResourceNotFound.class)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public ResponseEntity ResourceNotFound(ResourceNotFound ex, HttpServletRequest request) {
+        return ResponseEntity.badRequest().body(ex.toString());
+    }
 }

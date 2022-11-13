@@ -8,23 +8,47 @@ import com.ute.farmhome.dto.UserShowDTO;
 import com.ute.farmhome.entity.Role;
 import com.ute.farmhome.entity.StatusUser;
 import com.ute.farmhome.entity.User;
+import com.ute.farmhome.exception.ResourceNotFound;
 import com.ute.farmhome.repository.RoleRepository;
 import com.ute.farmhome.repository.StatusUserRepository;
 import com.ute.farmhome.repository.UserRepository;
 import com.ute.farmhome.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Service
-public class UserServiceImplement implements UserService {
+public class UserServiceImplement implements UserService, UserDetailsService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
     private StatusUserRepository statusUserRepository;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+    public final static Logger log = LoggerFactory.getLogger("info");
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username not found in the database"));
+        log.info("username {} found.", username);
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        user.getRoles().forEach(role -> {
+            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        });
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
+    }
     @Override
     public UserCreateDTO readJson(String user) {
         UserCreateDTO userCreateDTO = new UserCreateDTO();
@@ -36,10 +60,7 @@ public class UserServiceImplement implements UserService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        StatusUser statusUser = statusUserRepository.findById(userCreateDTO.getStatus().getId()).get();
-        Role role = roleRepository.findById(userCreateDTO.getRole().getId()).get();
-        userCreateDTO.setStatus(statusUser);
-        userCreateDTO.setRole(role);
+
         return userCreateDTO;
     }
     @Override
@@ -47,16 +68,25 @@ public class UserServiceImplement implements UserService {
         User user = new User();
         user.setId(userCreateDTO.getId());
         user.setUsername(userCreateDTO.getUsername());
-        user.setPassword(userCreateDTO.getPassword());
+        user.setPassword(passwordEncoder.encode(userCreateDTO.getPassword()));
         user.setAvatar(userCreateDTO.getAvatar());
         user.setFirstName(userCreateDTO.getFirstName());
         user.setLastName(userCreateDTO.getLastName());
         user.setEmail(userCreateDTO.getEmail());
         user.setCreateDate(LocalDate.now());
-        user.setStatus(userCreateDTO.getStatus());
-        user.setRole(userCreateDTO.getRole());
-//        user.setStatus(statusUserRepository.findById(userCreateDTO.getStatus().getId()).get());
-//        user.setRole(roleRepository.findById(userCreateDTO.getRole().getId()).get());
+        StatusUser statusUser = statusUserRepository.findById(userCreateDTO.getStatus().getId())
+                .orElseThrow(() -> new ResourceNotFound("StatusUser", "id", String.valueOf(userCreateDTO.getStatus().getId())));
+        user.setStatus(statusUser);
+        Collection<Role> roles = new ArrayList<>();
+        userCreateDTO.getRoles().forEach(role -> {
+            Role findRole = roleRepository.findById(role.getId()).orElseThrow(() -> new ResourceNotFound("Role", "id", String.valueOf(role.getId())));
+            user.getRoles().add(findRole);
+        });
         return userRepository.save(user);
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
     }
 }
