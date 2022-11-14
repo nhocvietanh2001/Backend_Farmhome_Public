@@ -18,13 +18,22 @@ import java.util.stream.Collectors;
 @Component
 public class JwtUtils {
     private String jwtSecret = "ute";
-    public String generateJwtToken(Authentication authentication) {
+    public String generateJwtAccessToken(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         Claims claims = Jwts.claims().setSubject(user.getUsername());
-        //claims.put("roles", authentication.getAuthorities().stream().map(item -> new SimpleGrantedAuthority(item.getAuthority())).collect(Collectors.toList()));
         claims.put("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
         return Jwts.builder()
-                .setClaims(claims).setIssuedAt(new Date())
+                .setClaims(claims)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(new Date().getTime() + 10 * 60 * 1000))
+                .signWith(SignatureAlgorithm.HS256, "ute".getBytes()).compact();
+    }
+
+    public String generateJwtRefreshToken(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return Jwts.builder()
+                .setSubject(user.getUsername())
+                .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime() + 7 * 24 * 60 * 1000))
                 .signWith(SignatureAlgorithm.HS256, "ute".getBytes()).compact();
     }
