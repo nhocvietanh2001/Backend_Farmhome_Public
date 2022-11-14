@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
@@ -16,15 +17,16 @@ import java.util.stream.Collectors;
 
 @Component
 public class JwtUtils {
-    private String jwtSecret = "secret";
+    private String jwtSecret = "ute";
     public String generateJwtToken(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         Claims claims = Jwts.claims().setSubject(user.getUsername());
-        claims.put("roles", authentication.getAuthorities().stream().map(item -> new SimpleGrantedAuthority(item.getAuthority())).collect(Collectors.toList()));
+        //claims.put("roles", authentication.getAuthorities().stream().map(item -> new SimpleGrantedAuthority(item.getAuthority())).collect(Collectors.toList()));
+        claims.put("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
         return Jwts.builder()
                 .setClaims(claims).setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime() + 7 * 24 * 60 * 1000))
-                .signWith(SignatureAlgorithm.HS256, "secret").compact();
+                .signWith(SignatureAlgorithm.HS256, "ute".getBytes()).compact();
     }
 
     public String getUserNameFromToken(String token) {

@@ -3,6 +3,7 @@ package com.ute.farmhome.service.implement;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ute.farmhome.dto.PaginationDTO;
 import com.ute.farmhome.dto.UserCreateDTO;
 import com.ute.farmhome.dto.UserShowDTO;
 import com.ute.farmhome.entity.Role;
@@ -16,6 +17,9 @@ import com.ute.farmhome.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,6 +31,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Service
 public class UserServiceImplement implements UserService, UserDetailsService {
@@ -89,4 +94,13 @@ public class UserServiceImplement implements UserService, UserDetailsService {
     public User findByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
     }
+
+    @Override
+    public PaginationDTO getAllUserPaging(int no, int number) {
+        Pageable pageable = PageRequest.of(no, number);
+        List<User> userList = userRepository.findAllUserPaging(pageable).stream().toList();
+        Page<User> userPage = userRepository.findAllUserPaging(pageable);
+        return new PaginationDTO(userList, userPage.isFirst(), userPage.isLast(), userPage.getTotalPages(), userPage.getTotalElements(), userPage.getSize(), userPage.getNumber());
+    }
+
 }

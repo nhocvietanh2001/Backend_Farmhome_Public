@@ -2,12 +2,15 @@ package com.ute.farmhome.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 public class ExceptionHandling {
@@ -22,5 +25,14 @@ public class ExceptionHandling {
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ResponseEntity ResourceNotFound(ResourceNotFound ex, HttpServletRequest request) {
         return ResponseEntity.badRequest().body(ex.toString());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
+    public ResponseEntity<?> handleAccessDenied(AccessDeniedException e) {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Forbidden");
+        response.put("error message", e.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
 }
