@@ -5,6 +5,7 @@ import com.ute.farmhome.entity.StatusUser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class UserCreateDTO {
     private String username;
     private String password;
     private String confirmPassword;
-    private String avatar;
+    private MultipartFile avatar;
     private String firstName;
     private String lastName;
     private String email;

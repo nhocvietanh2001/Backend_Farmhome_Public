@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -27,8 +28,8 @@ public class UserControllerAdmin {
     @Autowired
     private StatusUserRepository statusUserRepository;
     @PostMapping(value = "create", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> createUser(@RequestPart("user") String user) {
-        UserCreateDTO userCreateDTO = userService.readJson(user);
+    public ResponseEntity<?> createUser(@RequestPart("user") String user, @RequestPart(value = "avatar", required = false) MultipartFile avatar) {
+        UserCreateDTO userCreateDTO = userService.readJson(user, avatar);
         return ResponseEntity.ok(userService.createUser(userCreateDTO));
     }
     @GetMapping()

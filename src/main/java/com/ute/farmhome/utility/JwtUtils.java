@@ -24,7 +24,7 @@ public class JwtUtils {
                 .setClaims(claims)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime() + 10 * 60 * 1000))
-                .signWith(SignatureAlgorithm.HS256, "ute".getBytes()).compact();
+                .signWith(SignatureAlgorithm.HS256, jwtSecret.getBytes()).compact();
     }
 
     public String generateJwtRefreshToken(Authentication authentication) {
@@ -33,7 +33,7 @@ public class JwtUtils {
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000))
-                .signWith(SignatureAlgorithm.HS256, "ute".getBytes()).compact();
+                .signWith(SignatureAlgorithm.HS256, jwtSecret.getBytes()).compact();
     }
 
     public String getUserNameFromToken(String token) {

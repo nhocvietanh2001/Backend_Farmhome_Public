@@ -27,6 +27,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -55,11 +56,14 @@ public class UserServiceImplement implements UserService, UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
     @Override
-    public UserCreateDTO readJson(String user) {
+    public UserCreateDTO readJson(String user, MultipartFile avatar) {
         UserCreateDTO userCreateDTO = new UserCreateDTO();
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             userCreateDTO = objectMapper.readValue(user, UserCreateDTO.class);
+            if(avatar.isEmpty()) {
+                userCreateDTO.setAvatar(avatar);
+            }
         } catch (JsonMappingException e) {
             throw new RuntimeException(e);
         } catch (JsonProcessingException e) {
@@ -74,7 +78,6 @@ public class UserServiceImplement implements UserService, UserDetailsService {
         user.setId(userCreateDTO.getId());
         user.setUsername(userCreateDTO.getUsername());
         user.setPassword(passwordEncoder.encode(userCreateDTO.getPassword()));
-        user.setAvatar(userCreateDTO.getAvatar());
         user.setFirstName(userCreateDTO.getFirstName());
         user.setLastName(userCreateDTO.getLastName());
         user.setEmail(userCreateDTO.getEmail());
@@ -82,9 +85,9 @@ public class UserServiceImplement implements UserService, UserDetailsService {
         StatusUser statusUser = statusUserRepository.findById(userCreateDTO.getStatus().getId())
                 .orElseThrow(() -> new ResourceNotFound("StatusUser", "id", String.valueOf(userCreateDTO.getStatus().getId())));
         user.setStatus(statusUser);
-        Collection<Role> roles = new ArrayList<>();
         userCreateDTO.getRoles().forEach(role -> {
-            Role findRole = roleRepository.findById(role.getId()).orElseThrow(() -> new ResourceNotFound("Role", "id", String.valueOf(role.getId())));
+            Role findRole = roleRepository.findById(role.getId())
+                    .orElseThrow(() -> new ResourceNotFound("Role", "id", String.valueOf(role.getId())));
             user.getRoles().add(findRole);
         });
         return userRepository.save(user);
