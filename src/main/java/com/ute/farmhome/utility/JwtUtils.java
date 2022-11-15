@@ -1,12 +1,10 @@
 package com.ute.farmhome.utility;
 
-import com.ute.farmhome.service.implement.UserDetailsImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +32,7 @@ public class JwtUtils {
         return Jwts.builder()
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime() + 7 * 24 * 60 * 1000))
+                .setExpiration(new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000))
                 .signWith(SignatureAlgorithm.HS256, "ute".getBytes()).compact();
     }
 

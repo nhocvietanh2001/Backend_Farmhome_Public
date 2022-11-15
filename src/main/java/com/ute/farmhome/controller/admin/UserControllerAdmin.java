@@ -40,37 +40,57 @@ public class UserControllerAdmin {
     @PreAuthorize("hasAuthority('ROLE_FARMER')")
     @GetMapping(value = "farmer")
     public ResponseEntity<?> decentralized() {
-        return ResponseEntity.ok().body("this is for farmer only");
+        HashMap<String, String> map = new HashMap<>();
+        map.put("message", "This is for farmer only");
+        return ResponseEntity.ok().body(map);
     }
     @PreAuthorize("hasRole('MERCHANT')")
     @GetMapping(value = "merchant")
     public ResponseEntity<?> decentralizedS() {
-        return ResponseEntity.ok().body("this is for merchant only");
+        HashMap<String, String> map = new HashMap<>();
+        map.put("message", "This is for merchant only");
+        return ResponseEntity.ok().body(map);
     }
-    @PostConstruct
-    public void addData() {
-        Role mer = roleRepository.save(new Role(0, "MERCHANT"));
-        Role farm = roleRepository.save(new Role(0, "FARMER"));
-        Role admin = roleRepository.save(new Role(0, "ADMIN"));
-
-        Collection<Role> roles = new ArrayList<>();
-        roles.add(admin);
-        roles.add(farm);
-        roles.add(mer);
-
-        StatusUser active = statusUserRepository.save(new StatusUser(0, "Active"));
-        StatusUser inactive = statusUserRepository.save(new StatusUser(0, "Inactive"));
-
-        userService.createUser(new UserCreateDTO(0,
-                "vietanh",
-                "Password123",
-                "Password123",
-                null,
-                "Viet",
-                "Anh",
-                "vietanh@gmail.com",
-                null,
-                active,
-                roles));
-    }
+//    @PostConstruct
+//    public void addData() {
+//        Role mer = roleRepository.save(new Role(0, "MERCHANT"));
+//        Role farm = roleRepository.save(new Role(0, "FARMER"));
+//        Role admin = roleRepository.save(new Role(0, "ADMIN"));
+//
+//        Collection<Role> roles = new ArrayList<>();
+//        roles.add(admin);
+//        roles.add(farm);
+//        roles.add(mer);
+//
+//        Collection<Role> rolesKhoa = new ArrayList<>();
+//        rolesKhoa.add(admin);
+//        rolesKhoa.add(mer);
+//
+//        StatusUser active = statusUserRepository.save(new StatusUser(0, "Active"));
+//        StatusUser inactive = statusUserRepository.save(new StatusUser(0, "Inactive"));
+//
+//        userService.createUser(new UserCreateDTO(0,
+//                "vietanh",
+//                "Password123",
+//                "Password123",
+//                null,
+//                "Viet",
+//                "Anh",
+//                "vietanh@gmail.com",
+//                null,
+//                active,
+//                roles));
+//
+//        userService.createUser(new UserCreateDTO(0,
+//                "dangkhoa",
+//                "Password123",
+//                "Password123",
+//                null,
+//                "Dang",
+//                "Khoa",
+//                "dangkhoa@gmail.com",
+//                null,
+//                active,
+//                rolesKhoa));
+//    }
 }

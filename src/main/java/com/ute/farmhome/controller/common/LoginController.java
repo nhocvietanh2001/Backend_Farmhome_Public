@@ -1,10 +1,6 @@
 package com.ute.farmhome.controller.common;
 
 
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -16,9 +12,7 @@ import com.ute.farmhome.dto.JwtResponse;
 import com.ute.farmhome.dto.LoginRequest;
 import com.ute.farmhome.entity.Role;
 import com.ute.farmhome.entity.User;
-import com.ute.farmhome.filter.CustomAuthenticationFilter;
 import com.ute.farmhome.service.UserService;
-import com.ute.farmhome.service.implement.UserDetailsImpl;
 import com.ute.farmhome.utility.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,16 +22,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import static java.util.Arrays.stream;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 
