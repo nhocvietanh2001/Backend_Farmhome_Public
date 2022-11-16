@@ -3,6 +3,7 @@ package com.ute.farmhome.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -40,12 +41,19 @@ public class ExceptionHandling {
         Map<String, String> map = new HashMap<>();
         if(e.getMessage() != null) {
             map.put("error message", e.getMessage());
-            map.put("status code", "403");
+            map.put("status code", "400");
             return ResponseEntity.badRequest().body(map);
         }
         map = e.getErrors();
-        map.put("status code", "403");
+        map.put("status code", "400");
         return ResponseEntity.badRequest().body(map);
     }
-
+    @ExceptionHandler(AuthenticationException.class)
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<?> handleAuthenticationFail(AuthenticationException e) {
+        Map<String, String> map = new HashMap<>();
+        map.put("status code", "401");
+        map.put("message", e.getMessage());
+        return new ResponseEntity<>(map, HttpStatus.UNAUTHORIZED);
+    }
 }

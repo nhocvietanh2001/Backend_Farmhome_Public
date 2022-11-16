@@ -110,8 +110,11 @@ public class UserServiceImplement implements UserService, UserDetailsService {
 
     private Boolean validateData(UserCreateDTO userCreateDTO) {
         HashMap<String, String> mapError = new HashMap<>();
-        if (!validation.validateUsername(userCreateDTO.getUsername())) {
+        if (userCreateDTO.getUsername().length() < 6) {
             mapError.put("username length", "Username must 6 characters or above");
+        }
+        if (!userCreateDTO.getPassword().equals(userCreateDTO.getConfirmPassword())) {
+            mapError.put("confirm password", "Password and confirm password does not match");
         }
         if (!validation.validatePassword(userCreateDTO.getPassword())) {
             mapError.put("password", "Password must be 6 digits, have at least 1 capital, and have at least 1 number");

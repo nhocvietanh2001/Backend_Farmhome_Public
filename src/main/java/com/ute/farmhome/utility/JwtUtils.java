@@ -23,7 +23,7 @@ public class JwtUtils {
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime() + 10 * 60 * 1000))
+                .setExpiration(new Date(new Date().getTime() + 3 * 60 * 60 * 1000))
                 .signWith(SignatureAlgorithm.HS256, jwtSecret.getBytes()).compact();
     }
 
