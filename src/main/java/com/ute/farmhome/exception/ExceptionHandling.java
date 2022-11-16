@@ -26,7 +26,6 @@ public class ExceptionHandling {
     public ResponseEntity ResourceNotFound(ResourceNotFound ex, HttpServletRequest request) {
         return ResponseEntity.badRequest().body(ex.toString());
     }
-
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
     public ResponseEntity<?> handleAccessDenied(AccessDeniedException e) {
@@ -35,4 +34,18 @@ public class ExceptionHandling {
         response.put("error message", e.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
+    @ExceptionHandler(ValidationException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ResponseEntity<?> handleValidation(ValidationException e) {
+        Map<String, String> map = new HashMap<>();
+        if(e.getMessage() != null) {
+            map.put("error message", e.getMessage());
+            map.put("status code", "403");
+            return ResponseEntity.badRequest().body(map);
+        }
+        map = e.getErrors();
+        map.put("status code", "403");
+        return ResponseEntity.badRequest().body(map);
+    }
+
 }

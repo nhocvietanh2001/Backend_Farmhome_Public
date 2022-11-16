@@ -16,4 +16,6 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     Optional<User> findByUsername(String username);
     @Query("SELECT u FROM User u")
     Page<User> findAllUserPaging(Pageable pageable);
+    @Query("SELECT case WHEN count(u)> 0 then true else false end FROM User u WHERE u.username = :username")
+    boolean existByUsername(String username);
 }

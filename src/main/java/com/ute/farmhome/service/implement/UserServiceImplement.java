@@ -10,10 +10,12 @@ import com.ute.farmhome.entity.Role;
 import com.ute.farmhome.entity.StatusUser;
 import com.ute.farmhome.entity.User;
 import com.ute.farmhome.exception.ResourceNotFound;
+import com.ute.farmhome.exception.ValidationException;
 import com.ute.farmhome.repository.RoleRepository;
 import com.ute.farmhome.repository.StatusUserRepository;
 import com.ute.farmhome.repository.UserRepository;
 import com.ute.farmhome.service.UserService;
+import com.ute.farmhome.utility.Validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -44,6 +47,8 @@ public class UserServiceImplement implements UserService, UserDetailsService {
     private StatusUserRepository statusUserRepository;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private Validation validation;
     public final static Logger log = LoggerFactory.getLogger("info");
     @Override
     public UserDetails loadUserByUsername(String username) {
@@ -61,7 +66,7 @@ public class UserServiceImplement implements UserService, UserDetailsService {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             userCreateDTO = objectMapper.readValue(user, UserCreateDTO.class);
-            if(avatar.isEmpty()) {
+            if(avatar != null) {
                 userCreateDTO.setAvatar(avatar);
             }
         } catch (JsonMappingException e) {
@@ -75,9 +80,14 @@ public class UserServiceImplement implements UserService, UserDetailsService {
     @Override
     public User createUser(UserCreateDTO userCreateDTO) {
         User user = new User();
+        if (!validateData(userCreateDTO)) {
+            return null;
+        }
         user.setId(userCreateDTO.getId());
         user.setUsername(userCreateDTO.getUsername());
-        user.setPassword(passwordEncoder.encode(userCreateDTO.getPassword()));
+        if (userCreateDTO.getPassword().equals(userCreateDTO.getConfirmPassword())) {
+            user.setPassword(passwordEncoder.encode(userCreateDTO.getPassword()));
+        }
         user.setFirstName(userCreateDTO.getFirstName());
         user.setLastName(userCreateDTO.getLastName());
         user.setEmail(userCreateDTO.getEmail());
@@ -98,6 +108,25 @@ public class UserServiceImplement implements UserService, UserDetailsService {
         return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
     }
 
+    private Boolean validateData(UserCreateDTO userCreateDTO) {
+        HashMap<String, String> mapError = new HashMap<>();
+        if (!validation.validateUsername(userCreateDTO.getUsername())) {
+            mapError.put("username length", "Username must 6 characters or above");
+        }
+        if (!validation.validatePassword(userCreateDTO.getPassword())) {
+            mapError.put("password", "Password must be 6 digits, have at least 1 capital, and have at least 1 number");
+        }
+        if (userRepository.existByUsername(userCreateDTO.getUsername())) {
+            mapError.put("username", "Username existed");
+        }
+        if (userRepository.existByUsername(userCreateDTO.getEmail())) {
+            mapError.put("email", "Email existed");
+        }
+        if (mapError.size() > 0) {
+            throw new ValidationException(mapError);
+        }
+        return true;
+    }
     @Override
     public PaginationDTO getAllUserPaging(int no, int number) {
         Pageable pageable = PageRequest.of(no, number);
