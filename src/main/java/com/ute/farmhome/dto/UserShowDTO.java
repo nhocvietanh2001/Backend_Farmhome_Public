@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,8 +20,10 @@ public class UserShowDTO {
     private String avatar;
     private String firstName;
     private String lastName;
+    private LocalDate birthDay;
     private String email;
+    private String phone;
     private LocalDate createDate;
     private StatusUser status;
-    private Role role;
+    private Collection<Role> roles = new ArrayList<>();
 }

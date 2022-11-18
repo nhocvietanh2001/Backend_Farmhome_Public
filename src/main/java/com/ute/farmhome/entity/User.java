@@ -23,7 +23,9 @@ public class User {
     private String avatar;
     private String firstName;
     private String lastName;
+    private LocalDate birthDay;
     private String email;
+    private String phone;
     private LocalDate createDate;
     @OneToOne
     @JoinColumn(name = "Status_id")

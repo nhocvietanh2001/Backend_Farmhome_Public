@@ -21,7 +21,6 @@ public class Fruit {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	int id;
-
 	String name;
 	float weight;
 	String unit;

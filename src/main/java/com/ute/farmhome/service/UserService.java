@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface UserService {
     UserCreateDTO readJson(String user, MultipartFile avatar);
-    User createUser(UserCreateDTO userCreateDTO);
+    UserShowDTO createUser(UserCreateDTO userCreateDTO);
     User findByUsername(String username);
     PaginationDTO getAllUserPaging(int no, int number);
 

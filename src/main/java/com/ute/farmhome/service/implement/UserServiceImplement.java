@@ -11,6 +11,7 @@ import com.ute.farmhome.entity.StatusUser;
 import com.ute.farmhome.entity.User;
 import com.ute.farmhome.exception.ResourceNotFound;
 import com.ute.farmhome.exception.ValidationException;
+import com.ute.farmhome.mapper.UserMapper;
 import com.ute.farmhome.repository.RoleRepository;
 import com.ute.farmhome.repository.StatusUserRepository;
 import com.ute.farmhome.repository.UserRepository;
@@ -49,6 +50,8 @@ public class UserServiceImplement implements UserService, UserDetailsService {
     private BCryptPasswordEncoder passwordEncoder;
     @Autowired
     private Validation validation;
+    @Autowired
+    private UserMapper userMapper;
     public final static Logger log = LoggerFactory.getLogger("info");
     @Override
     public UserDetails loadUserByUsername(String username) {
@@ -78,29 +81,12 @@ public class UserServiceImplement implements UserService, UserDetailsService {
         return userCreateDTO;
     }
     @Override
-    public User createUser(UserCreateDTO userCreateDTO) {
-        User user = new User();
+    public UserShowDTO createUser(UserCreateDTO userCreateDTO) {
         if (!validateData(userCreateDTO)) {
             return null;
         }
-        user.setId(userCreateDTO.getId());
-        user.setUsername(userCreateDTO.getUsername());
-        if (userCreateDTO.getPassword().equals(userCreateDTO.getConfirmPassword())) {
-            user.setPassword(passwordEncoder.encode(userCreateDTO.getPassword()));
-        }
-        user.setFirstName(userCreateDTO.getFirstName());
-        user.setLastName(userCreateDTO.getLastName());
-        user.setEmail(userCreateDTO.getEmail());
-        user.setCreateDate(LocalDate.now());
-        StatusUser statusUser = statusUserRepository.findById(userCreateDTO.getStatus().getId())
-                .orElseThrow(() -> new ResourceNotFound("StatusUser", "id", String.valueOf(userCreateDTO.getStatus().getId())));
-        user.setStatus(statusUser);
-        userCreateDTO.getRoles().forEach(role -> {
-            Role findRole = roleRepository.findById(role.getId())
-                    .orElseThrow(() -> new ResourceNotFound("Role", "id", String.valueOf(role.getId())));
-            user.getRoles().add(findRole);
-        });
-        return userRepository.save(user);
+        User user = userMapper.map(userCreateDTO);
+        return userMapper.mapToShow(userRepository.save(user));
     }
 
     @Override
