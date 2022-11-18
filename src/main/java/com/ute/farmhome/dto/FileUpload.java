@@ -1,4 +1,4 @@
-package com.ute.farmhome.utility;
+package com.ute.farmhome.dto;
 
 import org.springframework.web.multipart.MultipartFile;
 

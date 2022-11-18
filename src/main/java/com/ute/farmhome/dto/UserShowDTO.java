@@ -25,5 +25,4 @@ public class UserShowDTO {
     private String phone;
     private LocalDate createDate;
     private StatusUser status;
-    private Collection<Role> roles = new ArrayList<>();
 }

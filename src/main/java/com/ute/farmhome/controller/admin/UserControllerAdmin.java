@@ -35,8 +35,8 @@ public class UserControllerAdmin {
     @GetMapping()
     public ResponseEntity<?> getAllUserPaging(@RequestParam HashMap<String, String> hashMap) {
         int no = Integer.parseInt(hashMap.getOrDefault("no", "0"));
-        int number = Integer.parseInt(hashMap.getOrDefault("number", "5"));
-        return ResponseEntity.ok(userService.getAllUserPaging(no, number));
+        int limit = Integer.parseInt(hashMap.getOrDefault("limit", "5"));
+        return ResponseEntity.ok(userService.getAllUserPaging(no, limit));
     }
     @PreAuthorize("hasAuthority('ROLE_FARMER')")
     @GetMapping(value = "farmer")

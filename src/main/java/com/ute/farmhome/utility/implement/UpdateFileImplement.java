@@ -6,15 +6,16 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
-import com.ute.farmhome.utility.FileUpload;
+import com.ute.farmhome.dto.FileUpload;
 import com.ute.farmhome.utility.UpdateFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletContext;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
+@Component
 public class UpdateFileImplement implements UpdateFile {
 
     @Autowired
@@ -32,11 +33,11 @@ public class UpdateFileImplement implements UpdateFile {
             fileUpload.setOutput(LocalDateTime.now().format(formatter) +
                     fileUpload.getFile().getOriginalFilename().substring(fileUpload.getFile().getOriginalFilename().lastIndexOf(".")));
 
-            Credentials credentials = GoogleCredentials.fromStream(new ClassPathResource("keystorage.json").getInputStream());
+            Credentials credentials = GoogleCredentials.fromStream(new ClassPathResource("key.json").getInputStream());
             Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
 
             String folderName =  "image/";
-            BlobId blobId = BlobId.of("r2s",folderName + fileUpload.getOutput());
+            BlobId blobId = BlobId.of("farmhome",folderName + fileUpload.getOutput());
             BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(fileUpload.getFile().getContentType()).build();
             byte[] arr = fileUpload.getFile().getBytes();
             storage.create(blobInfo, arr);
@@ -53,7 +54,7 @@ public class UpdateFileImplement implements UpdateFile {
         try {
             String name = fullPath.substring(fullPath.lastIndexOf("/") + 1);
 
-            Credentials credentials = GoogleCredentials.fromStream(new ClassPathResource("keystorage.json").getInputStream());
+            Credentials credentials = GoogleCredentials.fromStream(new ClassPathResource("key.json").getInputStream());
             Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
 
             storage.delete(bucketName, name);

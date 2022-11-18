@@ -18,4 +18,6 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     Page<User> findAllUserPaging(Pageable pageable);
     @Query("SELECT case WHEN count(u)> 0 then true else false end FROM User u WHERE u.username = :username")
     boolean existByUsername(String username);
+    boolean existsByEmail(String email);
+    boolean existsByPhone(String phone);
 }

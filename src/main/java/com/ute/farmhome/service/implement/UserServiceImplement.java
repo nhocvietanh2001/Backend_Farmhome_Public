@@ -3,6 +3,7 @@ package com.ute.farmhome.service.implement;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ute.farmhome.dto.FileUpload;
 import com.ute.farmhome.dto.PaginationDTO;
 import com.ute.farmhome.dto.UserCreateDTO;
 import com.ute.farmhome.dto.UserShowDTO;
@@ -16,7 +17,9 @@ import com.ute.farmhome.repository.RoleRepository;
 import com.ute.farmhome.repository.StatusUserRepository;
 import com.ute.farmhome.repository.UserRepository;
 import com.ute.farmhome.service.UserService;
+import com.ute.farmhome.utility.UpdateFile;
 import com.ute.farmhome.utility.Validation;
+import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +54,8 @@ public class UserServiceImplement implements UserService, UserDetailsService {
     @Autowired
     private Validation validation;
     @Autowired
+    private UpdateFile updateFile;
+    @Autowired
     private UserMapper userMapper;
     public final static Logger log = LoggerFactory.getLogger("info");
     @Override
@@ -70,7 +75,7 @@ public class UserServiceImplement implements UserService, UserDetailsService {
             ObjectMapper objectMapper = new ObjectMapper();
             userCreateDTO = objectMapper.readValue(user, UserCreateDTO.class);
             if(avatar != null) {
-                userCreateDTO.setAvatar(avatar);
+                userCreateDTO.setAvatarFile(avatar);
             }
         } catch (JsonMappingException e) {
             throw new RuntimeException(e);
@@ -84,6 +89,12 @@ public class UserServiceImplement implements UserService, UserDetailsService {
     public UserShowDTO createUser(UserCreateDTO userCreateDTO) {
         if (!validateData(userCreateDTO)) {
             return null;
+        }
+        if (userCreateDTO.getAvatarFile() != null) {
+            FileUpload fileUpload = new FileUpload();
+            fileUpload.setFile(userCreateDTO.getAvatarFile());
+            updateFile.update(fileUpload);
+            userCreateDTO.setAvatar(fileUpload.getOutput());
         }
         User user = userMapper.map(userCreateDTO);
         return userMapper.mapToShow(userRepository.save(user));
@@ -110,6 +121,9 @@ public class UserServiceImplement implements UserService, UserDetailsService {
         }
         if (userRepository.existByUsername(userCreateDTO.getEmail())) {
             mapError.put("email", "Email existed");
+        }
+        if (userRepository.existsByPhone(userCreateDTO.getPhone())) {
+            mapError.put("phone", "Phone existed");
         }
         if (mapError.size() > 0) {
             throw new ValidationException(mapError);

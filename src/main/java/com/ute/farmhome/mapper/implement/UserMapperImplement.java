@@ -34,6 +34,7 @@ public class UserMapperImplement implements UserMapper {
     @Override
     public User map(UserCreateDTO userCreateDTO) {
         User user = new User();
+        user.setAvatar(userCreateDTO.getAvatar());
         user.setId(userCreateDTO.getId());
         user.setUsername(userCreateDTO.getUsername());
         user.setPassword(passwordEncoder.encode(userCreateDTO.getPassword()));
@@ -67,7 +68,6 @@ public class UserMapperImplement implements UserMapper {
         dto.setPhone(user.getPhone());
         dto.setCreateDate(user.getCreateDate());
         dto.setStatus(user.getStatus());
-        dto.setRoles(user.getRoles());
         return dto;
     }
 
