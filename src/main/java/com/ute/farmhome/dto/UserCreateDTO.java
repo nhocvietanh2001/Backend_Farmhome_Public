@@ -1,6 +1,7 @@
 package com.ute.farmhome.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ute.farmhome.entity.Location;
 import com.ute.farmhome.entity.Role;
 import com.ute.farmhome.entity.StatusUser;
 import lombok.AllArgsConstructor;
@@ -28,6 +29,7 @@ public class UserCreateDTO {
     private String birthDay;
     private String email;
     private String phone;
+    private LocationDTO location;
     private LocalDate createDate;
     private StatusUser status;
     private Collection<Role> roles = new ArrayList<>();

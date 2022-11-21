@@ -6,7 +6,9 @@ import com.ute.farmhome.entity.Role;
 import com.ute.farmhome.entity.StatusUser;
 import com.ute.farmhome.entity.User;
 import com.ute.farmhome.exception.ResourceNotFound;
+import com.ute.farmhome.mapper.LocationMapper;
 import com.ute.farmhome.mapper.UserMapper;
+import com.ute.farmhome.repository.LocationRepository;
 import com.ute.farmhome.repository.RoleRepository;
 import com.ute.farmhome.repository.StatusUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,8 @@ public class UserMapperImplement implements UserMapper {
     private StatusUserRepository statusUserRepository;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private LocationMapper locationMapper;
 
     @Override
     public UserCreateDTO map(User user) {
@@ -43,6 +47,7 @@ public class UserMapperImplement implements UserMapper {
         user.setBirthDay(LocalDate.parse(userCreateDTO.getBirthDay()));
         user.setEmail(userCreateDTO.getEmail());
         user.setPhone(userCreateDTO.getPhone());
+        //user.setLocation(locationMapper.map(userCreateDTO.getLocation()));
         user.setCreateDate(LocalDate.now());
         StatusUser statusUser = statusUserRepository.findById(userCreateDTO.getStatus().getId())
                 .orElseThrow(() -> new ResourceNotFound("StatusUser", "id", String.valueOf(userCreateDTO.getStatus().getId())));
@@ -66,6 +71,7 @@ public class UserMapperImplement implements UserMapper {
         dto.setBirthDay(user.getBirthDay());
         dto.setEmail(user.getEmail());
         dto.setPhone(user.getPhone());
+        dto.setLocation(user.getLocation());
         dto.setCreateDate(user.getCreateDate());
         dto.setStatus(user.getStatus());
         return dto;

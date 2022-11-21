@@ -1,5 +1,6 @@
 package com.ute.farmhome.dto;
 
+import com.ute.farmhome.entity.Location;
 import com.ute.farmhome.entity.Role;
 import com.ute.farmhome.entity.StatusUser;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ public class UserShowDTO {
     private LocalDate birthDay;
     private String email;
     private String phone;
+    private Location location;
     private LocalDate createDate;
     private StatusUser status;
 }

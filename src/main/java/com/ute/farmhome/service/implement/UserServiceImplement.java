@@ -7,15 +7,18 @@ import com.ute.farmhome.dto.FileUpload;
 import com.ute.farmhome.dto.PaginationDTO;
 import com.ute.farmhome.dto.UserCreateDTO;
 import com.ute.farmhome.dto.UserShowDTO;
+import com.ute.farmhome.entity.Location;
 import com.ute.farmhome.entity.Role;
 import com.ute.farmhome.entity.StatusUser;
 import com.ute.farmhome.entity.User;
 import com.ute.farmhome.exception.ResourceNotFound;
 import com.ute.farmhome.exception.ValidationException;
+import com.ute.farmhome.mapper.LocationMapper;
 import com.ute.farmhome.mapper.UserMapper;
 import com.ute.farmhome.repository.RoleRepository;
 import com.ute.farmhome.repository.StatusUserRepository;
 import com.ute.farmhome.repository.UserRepository;
+import com.ute.farmhome.service.LocationService;
 import com.ute.farmhome.service.UserService;
 import com.ute.farmhome.utility.UpdateFile;
 import com.ute.farmhome.utility.Validation;
@@ -44,6 +47,8 @@ import java.util.List;
 @Service
 public class UserServiceImplement implements UserService, UserDetailsService {
     @Autowired
+    private LocationService locationService;
+    @Autowired
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
@@ -57,6 +62,8 @@ public class UserServiceImplement implements UserService, UserDetailsService {
     private UpdateFile updateFile;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private LocationMapper locationMapper;
     public final static Logger log = LoggerFactory.getLogger("info");
     @Override
     public UserDetails loadUserByUsername(String username) {
@@ -97,6 +104,7 @@ public class UserServiceImplement implements UserService, UserDetailsService {
             userCreateDTO.setAvatar(fileUpload.getOutput());
         }
         User user = userMapper.map(userCreateDTO);
+        user.setLocation(locationService.bindData(userCreateDTO.getLocation()));
         return userMapper.mapToShow(userRepository.save(user));
     }
 
