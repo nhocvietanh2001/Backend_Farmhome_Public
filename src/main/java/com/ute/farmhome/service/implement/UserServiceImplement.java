@@ -146,4 +146,10 @@ public class UserServiceImplement implements UserService, UserDetailsService {
         return new PaginationDTO(userList, userPage.isFirst(), userPage.isLast(), userPage.getTotalPages(), userPage.getTotalElements(), userPage.getSize(), userPage.getNumber());
     }
 
+    @Override
+    public UserShowDTO getByUsername(String username) {
+        return userMapper.mapToShow(userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFound("User", "username", username)));
+    }
+
 }
