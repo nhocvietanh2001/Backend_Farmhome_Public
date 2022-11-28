@@ -27,4 +27,6 @@ public class Fruit {
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "userid")
 	User farmer;
+	Boolean popular;
+	String season;
 }

@@ -2,12 +2,14 @@ package com.ute.farmhome.service.implement;
 
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
+import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ute.farmhome.dto.*;
+import com.ute.farmhome.exception.ResourceNotFound;
 import com.ute.farmhome.mapper.FruitMapper;
 import com.ute.farmhome.utility.UpdateFile;
 import org.checkerframework.checker.units.qual.A;
@@ -76,6 +78,25 @@ public class FruitServiceImplement implements FruitService {
 		List<FruitShowDTO> listFruit = fruitRepository.searchByName(name, pageable).stream().map(item -> fruitMapper.mapToShow(item)).toList();
 		Page<Fruit> page = fruitRepository.searchByName(name, pageable);
 		return new PaginationDTO(listFruit, page.isFirst(), page.isLast(), page.getTotalPages(), page.getTotalElements(), page.getSize(), page.getNumber());
+	}
+
+	@Override
+	public FruitShowDTO updateFruit(FruitDTO fruitDTO) {
+		Fruit fruit = fruitRepository.findById(fruitDTO.getId())
+				.orElseThrow(() -> new ResourceNotFound("fruit", "id", String.valueOf(fruitDTO.getId())));
+		if (fruitDTO.getImageFile() != null) {
+			FileUpload fileUpload = new FileUpload();
+			fileUpload.setFile(fruitDTO.getImageFile());
+			updateFile.update(fileUpload);
+			fruitDTO.setImage(fileUpload.getOutput());
+			fruit.setImage(fruitDTO.getImage());
+		}
+		fruit.setName(fruitDTO.getName());
+		fruit.setWeight(fruitDTO.getWeight());
+		fruit.setUnit(fruitDTO.getUnit());
+		fruit.setDate(LocalDate.parse(fruitDTO.getDate()));
+		fruit.setSeason(fruitDTO.getSeason());
+		return fruitMapper.mapToShow(fruitRepository.save(fruit));
 	}
 
 

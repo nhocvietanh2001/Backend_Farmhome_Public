@@ -14,4 +14,5 @@ public interface FruitService {
 	FruitDTO readJson(String fruit, MultipartFile image);
 	FruitShowDTO createFruit(FruitDTO fruitDTO);
 	PaginationDTO searchFruit(String name, int no, int limit);
+	FruitShowDTO updateFruit(FruitDTO fruitDTO);
 }

@@ -20,4 +20,5 @@ public class FruitDTO {
     String image;
     String date;
     User farmer;
+    String season;
 }

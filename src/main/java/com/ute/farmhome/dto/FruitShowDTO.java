@@ -16,8 +16,9 @@ public class FruitShowDTO {
     String name;
     float weight;
     String unit;
-    MultipartFile imageFile;
     String image;
     LocalDate date;
     UserShowDTO farmer;
+    Boolean popular;
+    String season;
 }
