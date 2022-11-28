@@ -15,4 +15,5 @@ public interface FruitService {
 	FruitShowDTO createFruit(FruitDTO fruitDTO);
 	PaginationDTO searchFruit(String name, int no, int limit);
 	FruitShowDTO updateFruit(FruitDTO fruitDTO);
+	PaginationDTO getFruitByUserId(int id, int no, int limit);
 }

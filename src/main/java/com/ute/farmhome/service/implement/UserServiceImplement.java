@@ -179,6 +179,12 @@ public class UserServiceImplement implements UserService, UserDetailsService {
         return userMapper.mapToShow(userRepository.save(user));
     }
 
+    @Override
+    public UserShowDTO getById(int id) {
+        return userMapper.mapToShow(userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFound("User", "id", String.valueOf(id))));
+    }
+
     private Boolean validateUpdateData(User user, UserCreateDTO userCreateDTO) {
         HashMap<String, String> mapError = new HashMap<>();
         if (!userCreateDTO.getEmail().equals(user.getEmail())) {

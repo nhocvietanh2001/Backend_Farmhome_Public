@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
@@ -17,7 +14,7 @@ public class UserController {
     @Autowired
     private UserService userService;
     @GetMapping("/profile")
-    public UserShowDTO getByUsername(Authentication authentication) {
+    public UserShowDTO getProfile(Authentication authentication) {
         Object principal = SecurityContextHolder. getContext(). getAuthentication(). getPrincipal();
         String username;
         if (principal instanceof UserDetails) {
@@ -26,5 +23,13 @@ public class UserController {
             username = principal.toString();
         }
         return userService.getByUsername(username);
+    }
+    @GetMapping("username/{username}")
+    public UserShowDTO getByUsername(@PathVariable String username) {
+        return userService.getByUsername(username);
+    }
+    @GetMapping("id/{id}")
+    public UserShowDTO getById(@PathVariable int id) {
+        return userService.getById(id);
     }
 }

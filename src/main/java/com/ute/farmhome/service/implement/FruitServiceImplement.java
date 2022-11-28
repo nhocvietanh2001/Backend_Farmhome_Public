@@ -100,5 +100,13 @@ public class FruitServiceImplement implements FruitService {
 		return fruitMapper.mapToShow(fruitRepository.save(fruit));
 	}
 
+	@Override
+	public PaginationDTO getFruitByUserId(int id, int no, int limit) {
+		Pageable pageable = PageRequest.of(no, limit);
+		List<?> listFruit = fruitRepository.getFruitByUserId(id, pageable).stream().map(item -> fruitMapper.mapToShow(item)).toList();
+		Page<?> page = fruitRepository.getFruitByUserId(id, pageable);
+		return new PaginationDTO(listFruit, page.isFirst(), page.isLast(), page.getTotalPages(), page.getTotalElements(), page.getSize(), page.getNumber());
+	}
+
 
 }
