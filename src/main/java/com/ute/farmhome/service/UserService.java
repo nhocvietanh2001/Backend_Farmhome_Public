@@ -14,4 +14,5 @@ public interface UserService {
     User findByUsername(String username);
     PaginationDTO getAllUserPaging(int no, int number);
     UserShowDTO getByUsername(String username);
+    UserShowDTO updateUser(UserCreateDTO userCreateDTO);
 }

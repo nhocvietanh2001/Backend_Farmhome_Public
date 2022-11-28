@@ -52,6 +52,11 @@ public class UserControllerAdmin {
         map.put("message", "This is for merchant only");
         return ResponseEntity.ok().body(map);
     }
+    @PutMapping(value = "update", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> updateUser(@RequestPart String user, @RequestPart(required = false) MultipartFile avatar) {
+        UserCreateDTO userCreateDTO = userService.readJson(user, avatar);
+        return ResponseEntity.ok(userService.updateUser(userCreateDTO));
+    }
 //    @PostConstruct
 //    public void addData() {
 //        Role mer = roleRepository.save(new Role(0, "MERCHANT"));

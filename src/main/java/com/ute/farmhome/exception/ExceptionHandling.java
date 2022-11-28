@@ -1,5 +1,6 @@
 package com.ute.farmhome.exception;
 
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -55,5 +56,14 @@ public class ExceptionHandling {
         map.put("status code", "401");
         map.put("message", e.getMessage());
         return new ResponseEntity<>(map, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(FileSizeLimitExceededException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ResponseEntity<?> handleFileSizeExceed(FileSizeLimitExceededException e) {
+        Map<String, String> map = new HashMap<>();
+        map.put("status code", "400");
+        map.put ("message", e.getMessage());
+        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
     }
 }

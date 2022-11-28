@@ -152,4 +152,47 @@ public class UserServiceImplement implements UserService, UserDetailsService {
                 .orElseThrow(() -> new ResourceNotFound("User", "username", username)));
     }
 
+    @Override
+    public UserShowDTO updateUser(UserCreateDTO userCreateDTO) {
+        User user = userRepository.findById(userCreateDTO.getId())
+                .orElseThrow(() -> new ResourceNotFound("User", "id", String.valueOf(userCreateDTO.getId())));
+        if (!validateUpdateData(user, userCreateDTO)) {
+            return null;
+        }
+        if (userCreateDTO.getAvatarFile() != null) {
+            FileUpload fileUpload = new FileUpload();
+            fileUpload.setFile(userCreateDTO.getAvatarFile());
+            updateFile.update(fileUpload);
+            userCreateDTO.setAvatar(fileUpload.getOutput());
+            user.setAvatar(userCreateDTO.getAvatar());
+        }
+        user.setFirstName(userCreateDTO.getFirstName());
+        user.setLastName(userCreateDTO.getLastName());
+        user.setBirthDay(LocalDate.parse(userCreateDTO.getBirthDay()));
+        user.setEmail(userCreateDTO.getEmail());
+        user.setPhone(userCreateDTO.getPhone());
+        user.setLocation(locationService.bindData(userCreateDTO.getLocation()));
+        StatusUser statusUser = statusUserRepository.findById(userCreateDTO.getStatus().getId())
+                .orElseThrow(() -> new ResourceNotFound("StatusUser", "id", String.valueOf(userCreateDTO.getStatus().getId())));
+        user.setStatus(statusUser);
+        return userMapper.mapToShow(userRepository.save(user));
+    }
+
+    private Boolean validateUpdateData(User user, UserCreateDTO userCreateDTO) {
+        HashMap<String, String> mapError = new HashMap<>();
+        if (!userCreateDTO.getEmail().equals(user.getEmail())) {
+            if (userRepository.existByUsername(userCreateDTO.getEmail())) {
+                mapError.put("email", "Email existed");
+            }
+        }
+        if (!userCreateDTO.getPhone().equals(user.getPhone())) {
+            if (userRepository.existsByPhone(userCreateDTO.getPhone())) {
+                mapError.put("phone", "Phone existed");
+            }
+        }
+        if (mapError.size() > 0) {
+            throw new ValidationException(mapError);
+        }
+        return true;
+    }
 }
