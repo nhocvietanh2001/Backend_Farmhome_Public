@@ -84,6 +84,12 @@ public class FruitServiceImplement implements FruitService {
 	public FruitShowDTO updateFruit(FruitDTO fruitDTO) {
 		Fruit fruit = fruitRepository.findById(fruitDTO.getId())
 				.orElseThrow(() -> new ResourceNotFound("fruit", "id", String.valueOf(fruitDTO.getId())));
+
+		fruit.setName(fruitDTO.getName());
+		fruit.setWeight(fruitDTO.getWeight());
+		fruit.setUnit(fruitDTO.getUnit());
+		fruit.setDate(LocalDate.parse(fruitDTO.getDate()));
+		fruit.setSeason(fruitDTO.getSeason());
 		if (fruitDTO.getImageFile() != null) {
 			FileUpload fileUpload = new FileUpload();
 			fileUpload.setFile(fruitDTO.getImageFile());
@@ -91,11 +97,6 @@ public class FruitServiceImplement implements FruitService {
 			fruitDTO.setImage(fileUpload.getOutput());
 			fruit.setImage(fruitDTO.getImage());
 		}
-		fruit.setName(fruitDTO.getName());
-		fruit.setWeight(fruitDTO.getWeight());
-		fruit.setUnit(fruitDTO.getUnit());
-		fruit.setDate(LocalDate.parse(fruitDTO.getDate()));
-		fruit.setSeason(fruitDTO.getSeason());
 		return fruitMapper.mapToShow(fruitRepository.save(fruit));
 	}
 

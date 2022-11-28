@@ -159,13 +159,7 @@ public class UserServiceImplement implements UserService, UserDetailsService {
         if (!validateUpdateData(user, userCreateDTO)) {
             return null;
         }
-        if (userCreateDTO.getAvatarFile() != null) {
-            FileUpload fileUpload = new FileUpload();
-            fileUpload.setFile(userCreateDTO.getAvatarFile());
-            updateFile.update(fileUpload);
-            userCreateDTO.setAvatar(fileUpload.getOutput());
-            user.setAvatar(userCreateDTO.getAvatar());
-        }
+
         user.setFirstName(userCreateDTO.getFirstName());
         user.setLastName(userCreateDTO.getLastName());
         user.setBirthDay(LocalDate.parse(userCreateDTO.getBirthDay()));
@@ -175,6 +169,13 @@ public class UserServiceImplement implements UserService, UserDetailsService {
         StatusUser statusUser = statusUserRepository.findById(userCreateDTO.getStatus().getId())
                 .orElseThrow(() -> new ResourceNotFound("StatusUser", "id", String.valueOf(userCreateDTO.getStatus().getId())));
         user.setStatus(statusUser);
+        if (userCreateDTO.getAvatarFile() != null) {
+            FileUpload fileUpload = new FileUpload();
+            fileUpload.setFile(userCreateDTO.getAvatarFile());
+            updateFile.update(fileUpload);
+            userCreateDTO.setAvatar(fileUpload.getOutput());
+            user.setAvatar(userCreateDTO.getAvatar());
+        }
         return userMapper.mapToShow(userRepository.save(user));
     }
 
