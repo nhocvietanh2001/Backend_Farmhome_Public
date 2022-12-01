@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface FruitService {
 	PaginationDTO getAllFruit(int no, int limit);
 	FruitShowDTO getFruitById(int id);
-	FruitDTO readJson(String fruit, MultipartFile image);
+	FruitDTO readJson(String fruit, List<MultipartFile> image);
 	FruitShowDTO createFruit(FruitDTO fruitDTO);
 	PaginationDTO searchFruit(String name, int no, int limit);
 	FruitShowDTO updateFruit(FruitDTO fruitDTO);

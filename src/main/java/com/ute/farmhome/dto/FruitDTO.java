@@ -1,5 +1,6 @@
 package com.ute.farmhome.dto;
 
+import com.ute.farmhome.entity.FruitImage;
 import com.ute.farmhome.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,8 +18,8 @@ public class FruitDTO {
     String name;
     float weight;
     String unit;
-    MultipartFile imageFile;
-    String image;
+    List<MultipartFile> imageFiles;
+    List<FruitImage> images;
     String date;
     User farmer;
     String season;

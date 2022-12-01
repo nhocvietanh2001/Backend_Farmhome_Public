@@ -1,6 +1,7 @@
 package com.ute.farmhome.entity;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -21,7 +22,7 @@ public class Fruit {
 	String name;
 	float weight;
 	String unit;
-	String image;
+	List<FruitImage> images;
 	LocalDate date;
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

@@ -9,10 +9,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ute.farmhome.dto.*;
+import com.ute.farmhome.entity.FruitImage;
 import com.ute.farmhome.exception.ResourceNotFound;
 import com.ute.farmhome.mapper.FruitMapper;
 import com.ute.farmhome.utility.UpdateFile;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -44,13 +44,13 @@ public class FruitServiceImplement implements FruitService {
 		return fruitMapper.mapToShow(fruitRepository.findById(id).get());
 	}
 	@Override
-	public FruitDTO readJson(String fruit, MultipartFile image) {
+	public FruitDTO readJson(String fruit, List<MultipartFile> images) {
 		FruitDTO fruitDTO = new FruitDTO();
 		try {
 			ObjectMapper objectMapper = new ObjectMapper();
 			fruitDTO = objectMapper.readValue(fruit, FruitDTO.class);
-			if(image != null) {
-				fruitDTO.setImageFile(image);
+			if(images.stream().count() > 0) {
+				fruitDTO.setImageFiles(images);
 			}
 		} catch (JsonMappingException e) {
 			throw new RuntimeException(e);
@@ -62,11 +62,15 @@ public class FruitServiceImplement implements FruitService {
 	}
 	@Override
 	public FruitShowDTO createFruit(FruitDTO fruitDTO) {
-		if (fruitDTO.getImageFile() != null) {
-			FileUpload fileUpload = new FileUpload();
-			fileUpload.setFile(fruitDTO.getImageFile());
-			updateFile.update(fileUpload);
-			fruitDTO.setImage(fileUpload.getOutput());
+		if (fruitDTO.getImageFiles().stream().count() > 0) {
+			for (MultipartFile imageFile : fruitDTO.getImageFiles()) {
+				FileUpload fileUpload = new FileUpload();
+				fileUpload.setFile(imageFile);
+				updateFile.update(fileUpload);
+				FruitImage fruitImage = new FruitImage();
+				fruitImage.setUrl(fileUpload.getOutput());
+				fruitDTO.getImages().add(fruitImage);
+			}
 		}
 		Fruit fruit = fruitMapper.map(fruitDTO);
 		return fruitMapper.mapToShow(fruitRepository.save(fruit));
@@ -90,12 +94,14 @@ public class FruitServiceImplement implements FruitService {
 		fruit.setUnit(fruitDTO.getUnit());
 		fruit.setDate(LocalDate.parse(fruitDTO.getDate()));
 		fruit.setSeason(fruitDTO.getSeason());
-		if (fruitDTO.getImageFile() != null) {
-			FileUpload fileUpload = new FileUpload();
-			fileUpload.setFile(fruitDTO.getImageFile());
-			updateFile.update(fileUpload);
-			fruitDTO.setImage(fileUpload.getOutput());
-			fruit.setImage(fruitDTO.getImage());
+		if (fruitDTO.getImageFiles().stream().count() > 0) {
+			for (MultipartFile imageFile : fruitDTO.getImageFiles()) {
+				FileUpload fileUpload = new FileUpload();
+				fileUpload.setFile(imageFile);
+				updateFile.update(fileUpload);
+
+				fruitDTO.getImages().add(fileUpload.getOutput());
+			}
 		}
 		return fruitMapper.mapToShow(fruitRepository.save(fruit));
 	}
