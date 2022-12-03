@@ -3,6 +3,7 @@ package com.ute.farmhome.service.implement;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -12,7 +13,9 @@ import com.ute.farmhome.dto.*;
 import com.ute.farmhome.entity.FruitImage;
 import com.ute.farmhome.exception.ResourceNotFound;
 import com.ute.farmhome.mapper.FruitMapper;
+import com.ute.farmhome.repository.FruitImageRepository;
 import com.ute.farmhome.utility.UpdateFile;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +31,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class FruitServiceImplement implements FruitService {
 	@Autowired
 	private FruitRepository fruitRepository;
+	@Autowired
+	private FruitImageRepository fruitImageRepository;
 	@Autowired
 	private UpdateFile updateFile;
 	@Autowired
@@ -73,6 +78,7 @@ public class FruitServiceImplement implements FruitService {
 			}
 		}
 		Fruit fruit = fruitMapper.map(fruitDTO);
+		fruitDTO.getImages().forEach(fruitImage -> {fruitImage.setFruit(fruit);});
 		return fruitMapper.mapToShow(fruitRepository.save(fruit));
 	}
 
@@ -95,13 +101,19 @@ public class FruitServiceImplement implements FruitService {
 		fruit.setDate(LocalDate.parse(fruitDTO.getDate()));
 		fruit.setSeason(fruitDTO.getSeason());
 		if (fruitDTO.getImageFiles().stream().count() > 0) {
+			List<FruitImage> fruitImages = new ArrayList<>();
 			for (MultipartFile imageFile : fruitDTO.getImageFiles()) {
 				FileUpload fileUpload = new FileUpload();
 				fileUpload.setFile(imageFile);
+				fruit.getImages().forEach(fruitImage -> {updateFile.delete(fruitImage.getUrl());
+				fruitImageRepository.deleteById(fruitImage.getId());});
 				updateFile.update(fileUpload);
-
-				fruitDTO.getImages().add(fileUpload.getOutput());
+				FruitImage fruitImage = new FruitImage();
+				fruitImage.setUrl(fileUpload.getOutput());
+				fruitImage.setFruit(fruit);
+				fruitImages.add(fruitImage);
 			}
+			fruit.setImages(fruitImages);
 		}
 		return fruitMapper.mapToShow(fruitRepository.save(fruit));
 	}

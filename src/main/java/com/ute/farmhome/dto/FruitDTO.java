@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -18,8 +19,8 @@ public class FruitDTO {
     String name;
     float weight;
     String unit;
-    List<MultipartFile> imageFiles;
-    List<FruitImage> images;
+    List<MultipartFile> imageFiles = new ArrayList<>();;
+    List<FruitImage> images = new ArrayList<>();;
     String date;
     User farmer;
     String season;
