@@ -47,6 +47,7 @@ public class UserMapperImplement implements UserMapper {
         user.setBirthDay(LocalDate.parse(userCreateDTO.getBirthDay()));
         user.setEmail(userCreateDTO.getEmail());
         user.setPhone(userCreateDTO.getPhone());
+        user.setDescription(userCreateDTO.getDescription());
         //user.setLocation(locationMapper.map(userCreateDTO.getLocation()));
         user.setCreateDate(LocalDate.now());
         StatusUser statusUser = statusUserRepository.findById(userCreateDTO.getStatus().getId())
@@ -71,6 +72,7 @@ public class UserMapperImplement implements UserMapper {
         dto.setBirthDay(user.getBirthDay());
         dto.setEmail(user.getEmail());
         dto.setPhone(user.getPhone());
+        dto.setDescription(user.getDescription());
         dto.setLocation(user.getLocation());
         dto.setCreateDate(user.getCreateDate());
         dto.setStatus(user.getStatus());

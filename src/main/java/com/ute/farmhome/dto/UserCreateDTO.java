@@ -29,6 +29,7 @@ public class UserCreateDTO {
     private String birthDay;
     private String email;
     private String phone;
+    private String description;
     private LocationDTO location;
     private LocalDate createDate;
     private StatusUser status;

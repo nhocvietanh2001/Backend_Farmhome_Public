@@ -27,6 +27,7 @@ public class FruitMapperImplement implements FruitMapper {
         fruit.setUnit(dto.getUnit());
         fruit.setImages(dto.getImages());
         fruit.setDate(LocalDate.parse(dto.getDate()));
+        fruit.setDescription(dto.getDescription());
         fruit.setFarmer(userRepository.findById(dto.getFarmer().getId())
                 .orElseThrow(() -> new ResourceNotFound("User", "id", String.valueOf(dto.getFarmer().getId()))));
         fruit.setSeason(dto.getSeason());
@@ -42,6 +43,7 @@ public class FruitMapperImplement implements FruitMapper {
         dto.setUnit(fruit.getUnit());
         dto.setImages(fruit.getImages());
         dto.setDate(String.valueOf(fruit.getDate()));
+        dto.setDescription(fruit.getDescription());
         dto.setFarmer(fruit.getFarmer());
         dto.setSeason(fruit.getSeason());
         return dto;
@@ -57,6 +59,7 @@ public class FruitMapperImplement implements FruitMapper {
         dto.setImages(fruit.getImages());
         dto.setDate(fruit.getDate());
         dto.setFarmer(userMapper.mapToShow(fruit.getFarmer()));
+        dto.setDescription(fruit.getDescription());
         dto.setSeason(fruit.getSeason());
         dto.setPopular(fruit.getPopular());
         return dto;

@@ -19,8 +19,9 @@ public class FruitDTO {
     String name;
     float weight;
     String unit;
-    List<MultipartFile> imageFiles = new ArrayList<>();;
-    List<FruitImage> images = new ArrayList<>();;
+    List<MultipartFile> imageFiles = new ArrayList<>();
+    List<FruitImage> images = new ArrayList<>();
+    String description;
     String date;
     User farmer;
     String season;

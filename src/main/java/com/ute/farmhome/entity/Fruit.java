@@ -26,6 +26,7 @@ public class Fruit {
 	@OneToMany(mappedBy = "fruit", cascade = CascadeType.ALL)
 	List<FruitImage> images = new ArrayList<>();
 	LocalDate date;
+	String description;
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "userid")

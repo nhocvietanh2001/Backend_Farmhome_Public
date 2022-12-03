@@ -28,6 +28,7 @@ public class User implements Serializable {
     private LocalDate birthDay;
     private String email;
     private String phone;
+    private String description;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "location_id")
     private Location location;

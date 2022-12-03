@@ -24,6 +24,7 @@ public class UserShowDTO {
     private LocalDate birthDay;
     private String email;
     private String phone;
+    private String description;
     private Location location;
     private LocalDate createDate;
     private StatusUser status;

@@ -19,7 +19,8 @@ public class FruitShowDTO {
     String name;
     float weight;
     String unit;
-    List<FruitImage> images = new ArrayList<>();;
+    List<FruitImage> images = new ArrayList<>();
+    String description;
     LocalDate date;
     UserShowDTO farmer;
     Boolean popular;
