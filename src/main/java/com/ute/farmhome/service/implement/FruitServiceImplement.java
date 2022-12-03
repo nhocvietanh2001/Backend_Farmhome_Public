@@ -14,6 +14,7 @@ import com.ute.farmhome.entity.FruitImage;
 import com.ute.farmhome.exception.ResourceNotFound;
 import com.ute.farmhome.mapper.FruitMapper;
 import com.ute.farmhome.repository.FruitImageRepository;
+import com.ute.farmhome.service.FruitImageService;
 import com.ute.farmhome.utility.UpdateFile;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FruitServiceImplement implements FruitService {
+	@Autowired
+	private FruitImageService fruitImageService;
 	@Autowired
 	private FruitRepository fruitRepository;
 	@Autowired
@@ -54,8 +57,10 @@ public class FruitServiceImplement implements FruitService {
 		try {
 			ObjectMapper objectMapper = new ObjectMapper();
 			fruitDTO = objectMapper.readValue(fruit, FruitDTO.class);
-			if(images.stream().count() > 0) {
-				fruitDTO.setImageFiles(images);
+			if (images != null) {
+				if (images.stream().count() > 0) {
+					fruitDTO.setImageFiles(images);
+				}
 			}
 		} catch (JsonMappingException e) {
 			throw new RuntimeException(e);
@@ -100,13 +105,14 @@ public class FruitServiceImplement implements FruitService {
 		fruit.setUnit(fruitDTO.getUnit());
 		fruit.setDate(LocalDate.parse(fruitDTO.getDate()));
 		fruit.setSeason(fruitDTO.getSeason());
+		fruit.setPopular(fruitDTO.getPopular());
 		if (fruitDTO.getImageFiles().stream().count() > 0) {
 			List<FruitImage> fruitImages = new ArrayList<>();
 			for (MultipartFile imageFile : fruitDTO.getImageFiles()) {
 				FileUpload fileUpload = new FileUpload();
 				fileUpload.setFile(imageFile);
 				fruit.getImages().forEach(fruitImage -> {updateFile.delete(fruitImage.getUrl());
-				fruitImageRepository.deleteById(fruitImage.getId());});
+				fruitImageService.deleteImageById(fruitImage.getId());});
 				updateFile.update(fileUpload);
 				FruitImage fruitImage = new FruitImage();
 				fruitImage.setUrl(fileUpload.getOutput());
@@ -123,6 +129,14 @@ public class FruitServiceImplement implements FruitService {
 		Pageable pageable = PageRequest.of(no, limit);
 		List<?> listFruit = fruitRepository.getFruitByUserId(id, pageable).stream().map(item -> fruitMapper.mapToShow(item)).toList();
 		Page<?> page = fruitRepository.getFruitByUserId(id, pageable);
+		return new PaginationDTO(listFruit, page.isFirst(), page.isLast(), page.getTotalPages(), page.getTotalElements(), page.getSize(), page.getNumber());
+	}
+
+	@Override
+	public PaginationDTO filterPaging(String name, Float amount, List<String> seasonList, Boolean popular, String order, int no, int limit) {
+		Pageable pageable = PageRequest.of(no, limit);
+		List<?> listFruit = fruitRepository.filterFruit(name, amount, seasonList, popular, order, pageable).stream().map(item -> fruitMapper.mapToShow(item)).toList();
+		Page<Fruit> page = fruitRepository.filterFruit(name, amount, seasonList, popular, order, pageable);
 		return new PaginationDTO(listFruit, page.isFirst(), page.isLast(), page.getTotalPages(), page.getTotalElements(), page.getSize(), page.getNumber());
 	}
 

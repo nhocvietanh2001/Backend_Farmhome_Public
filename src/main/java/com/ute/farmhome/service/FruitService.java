@@ -6,6 +6,7 @@ import com.ute.farmhome.dto.FruitDTO;
 import com.ute.farmhome.dto.FruitShowDTO;
 import com.ute.farmhome.dto.PaginationDTO;
 import com.ute.farmhome.entity.Fruit;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface FruitService {
@@ -16,4 +17,5 @@ public interface FruitService {
 	PaginationDTO searchFruit(String name, int no, int limit);
 	FruitShowDTO updateFruit(FruitDTO fruitDTO);
 	PaginationDTO getFruitByUserId(int id, int no, int limit);
+	PaginationDTO filterPaging(String name, Float amount, List<String> seasonList, Boolean popular, String order, int no, int limit);
 }

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import com.ute.farmhome.entity.Fruit;
 
 @Repository
-public interface FruitRepository extends CrudRepository<Fruit, Integer>{
+public interface FruitRepository extends CrudRepository<Fruit, Integer>, FilteringRepository {
 	@Query("SELECT f FROM Fruit f")
 	Page<Fruit> findAllFruit(PageRequest pageRequest);
 	@Query("SELECT f FROM Fruit f WHERE f.name like %:name%")

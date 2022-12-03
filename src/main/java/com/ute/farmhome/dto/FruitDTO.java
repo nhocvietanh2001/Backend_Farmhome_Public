@@ -25,4 +25,5 @@ public class FruitDTO {
     String date;
     User farmer;
     String season;
+    Boolean popular;
 }
