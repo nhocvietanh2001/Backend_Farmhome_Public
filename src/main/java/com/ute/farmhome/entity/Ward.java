@@ -11,14 +11,14 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "location")
-public class Location implements Serializable {
+@Table(name = "ward")
+public class Ward implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String address;
-    @OneToOne
-    @JoinColumn(name = "ward_id")
-    private Ward ward;
+    private String name;
+    @ManyToOne
+    @JoinColumn(name = "district_id")
+    private District district;
 }

@@ -6,6 +6,7 @@ import com.ute.farmhome.exception.ResourceNotFound;
 import com.ute.farmhome.repository.LocationRepository;
 import com.ute.farmhome.service.DistrictService;
 import com.ute.farmhome.service.LocationService;
+import com.ute.farmhome.service.WardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +15,12 @@ public class LocationServiceImplement implements LocationService {
     @Autowired
     private LocationRepository locationRepository;
     @Autowired
-    private DistrictService districtService;
+    private WardService wardService;
     @Override
     public Location bindData(LocationDTO dto) {
         Location location = new Location();
         location.setAddress(dto.getAddress());
-        location.setDistrict(districtService.findById(dto.getDistrict().getId()));
+        location.setWard(wardService.findById(dto.getWard().getId()));
         return location;
     }
 
@@ -28,7 +29,7 @@ public class LocationServiceImplement implements LocationService {
         Location location = locationRepository.findById(dto.getId())
                 .orElse(new Location());
         location.setAddress(dto.getAddress());
-        location.setDistrict(districtService.findById(dto.getDistrict().getId()));
+        location.setWard(wardService.findById(dto.getWard().getId()));
         return location;
     }
 

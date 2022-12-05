@@ -1,6 +1,5 @@
 package com.ute.farmhome.dto;
 
-import com.ute.farmhome.entity.District;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,8 +7,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class LocationDTO {
+public class WardDTO {
     private int id;
-    private String address;
-    private WardDTO ward;
+    private String name;
+    private DistrictDTO district;
 }
