@@ -45,7 +45,7 @@ public class FruitMapperImplement implements FruitMapper {
         dto.setImages(fruit.getImages());
         dto.setDate(String.valueOf(fruit.getDate()));
         dto.setDescription(fruit.getDescription());
-        dto.setFarmer(fruit.getFarmer());
+        dto.setFarmer(userMapper.mapToShow(fruit.getFarmer()));
         dto.setSeason(fruit.getSeason());
         dto.setPopular(fruit.getPopular());
         return dto;

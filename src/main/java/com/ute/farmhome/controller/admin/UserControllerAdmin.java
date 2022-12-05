@@ -57,46 +57,4 @@ public class UserControllerAdmin {
         UserCreateDTO userCreateDTO = userService.readJson(user, avatar);
         return ResponseEntity.ok(userService.updateUser(userCreateDTO));
     }
-//    @PostConstruct
-//    public void addData() {
-//        Role mer = roleRepository.save(new Role(0, "MERCHANT"));
-//        Role farm = roleRepository.save(new Role(0, "FARMER"));
-//        Role admin = roleRepository.save(new Role(0, "ADMIN"));
-//
-//        Collection<Role> roles = new ArrayList<>();
-//        roles.add(admin);
-//        roles.add(farm);
-//        roles.add(mer);
-//
-//        Collection<Role> rolesKhoa = new ArrayList<>();
-//        rolesKhoa.add(admin);
-//        rolesKhoa.add(mer);
-//
-//        StatusUser active = statusUserRepository.save(new StatusUser(0, "Active"));
-//        StatusUser inactive = statusUserRepository.save(new StatusUser(0, "Inactive"));
-//
-//        userService.createUser(new UserCreateDTO(0,
-//                "vietanh",
-//                "Password123",
-//                "Password123",
-//                null,
-//                "Viet",
-//                "Anh",
-//                "vietanh@gmail.com",
-//                null,
-//                active,
-//                roles));
-//
-//        userService.createUser(new UserCreateDTO(0,
-//                "dangkhoa",
-//                "Password123",
-//                "Password123",
-//                null,
-//                "Dang",
-//                "Khoa",
-//                "dangkhoa@gmail.com",
-//                null,
-//                active,
-//                rolesKhoa));
-//    }
 }

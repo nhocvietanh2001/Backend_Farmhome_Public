@@ -16,4 +16,5 @@ public interface UserService {
     UserShowDTO getByUsername(String username);
     UserShowDTO updateUser(UserCreateDTO userCreateDTO);
     UserShowDTO getById(int id);
+    User findById(int id);
 }

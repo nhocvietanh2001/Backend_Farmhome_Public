@@ -23,7 +23,7 @@ public class FruitDTO {
     List<FruitImage> images = new ArrayList<>();
     String description;
     String date;
-    User farmer;
+    UserShowDTO farmer;
     String season;
     Boolean popular;
 }

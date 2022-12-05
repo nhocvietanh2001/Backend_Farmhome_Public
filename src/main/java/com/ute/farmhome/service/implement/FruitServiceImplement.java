@@ -140,5 +140,10 @@ public class FruitServiceImplement implements FruitService {
 		return new PaginationDTO(listFruit, page.isFirst(), page.isLast(), page.getTotalPages(), page.getTotalElements(), page.getSize(), page.getNumber());
 	}
 
+	@Override
+	public Fruit findFruitById(int id) {
+		return fruitRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFound("Fruit", "id", String.valueOf(id)));
+	}
 
 }

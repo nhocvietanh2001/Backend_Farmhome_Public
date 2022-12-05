@@ -61,7 +61,7 @@ public class LoginController {
         User userDto = userService.findByUsername(user.getUsername());
         long id = userDto.getId();
         List<String> roles = user.getAuthorities().stream().map(item -> item.getAuthority()).collect(Collectors.toList());
-        return new ResponseEntity<JwtResponse>(new JwtResponse(accessToken, refreshToken, user.getUsername(), roles, userDto.getAvatar(), id), HttpStatus.CREATED);
+        return new ResponseEntity<JwtResponse>(new JwtResponse(accessToken, refreshToken, user.getUsername(), userDto.getAvatar(), id), HttpStatus.CREATED);
     }
     @GetMapping(value = "/refreshToken")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws StreamWriteException, DatabindException, IOException
@@ -83,7 +83,7 @@ public class LoginController {
                         .sign(algorithm);
                 Map<String, String> maps = new HashMap<String, String>();
                 maps.put("access_token", access_token);
-                maps.put("refesh_token", refresh_token);
+                maps.put("refresh_token", refresh_token);
                 response.setContentType("APPLICATION_JSON_VALUE");
                 new ObjectMapper().writeValue(response.getOutputStream(), maps);
             } catch (Exception e) {
@@ -98,7 +98,7 @@ public class LoginController {
                 new ObjectMapper().writeValue(response.getOutputStream(), maps);//GHI RA BODY
             }
         } else {
-            throw new RuntimeException("Refesh token is missing");
+            throw new RuntimeException("Refresh token is missing");
         }
 
     }

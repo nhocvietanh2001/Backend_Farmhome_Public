@@ -165,7 +165,7 @@ public class UserServiceImplement implements UserService, UserDetailsService {
         user.setBirthDay(LocalDate.parse(userCreateDTO.getBirthDay()));
         user.setEmail(userCreateDTO.getEmail());
         user.setPhone(userCreateDTO.getPhone());
-        user.setLocation(locationService.bindData(userCreateDTO.getLocation()));
+        user.setLocation(locationService.bindUpdateData(userCreateDTO.getLocation()));
         StatusUser statusUser = statusUserRepository.findById(userCreateDTO.getStatus().getId())
                 .orElseThrow(() -> new ResourceNotFound("StatusUser", "id", String.valueOf(userCreateDTO.getStatus().getId())));
         user.setStatus(statusUser);
@@ -183,6 +183,12 @@ public class UserServiceImplement implements UserService, UserDetailsService {
     public UserShowDTO getById(int id) {
         return userMapper.mapToShow(userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("User", "id", String.valueOf(id))));
+    }
+
+    @Override
+    public User findById(int id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFound("User", "id", String.valueOf(id)));
     }
 
     private Boolean validateUpdateData(User user, UserCreateDTO userCreateDTO) {
