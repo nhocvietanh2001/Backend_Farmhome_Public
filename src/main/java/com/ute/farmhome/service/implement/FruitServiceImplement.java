@@ -1,41 +1,48 @@
 package com.ute.farmhome.service.implement;
 
-import java.awt.print.PageFormat;
-import java.awt.print.Printable;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ute.farmhome.dto.*;
+import com.ute.farmhome.dto.FileUpload;
+import com.ute.farmhome.dto.FruitDTO;
+import com.ute.farmhome.dto.FruitShowDTO;
+import com.ute.farmhome.dto.PaginationDTO;
+import com.ute.farmhome.entity.Fruit;
 import com.ute.farmhome.entity.FruitImage;
+import com.ute.farmhome.entity.User;
 import com.ute.farmhome.exception.ResourceNotFound;
 import com.ute.farmhome.mapper.FruitMapper;
 import com.ute.farmhome.repository.FruitImageRepository;
+import com.ute.farmhome.repository.FruitRepository;
+import com.ute.farmhome.repository.UserRepository;
 import com.ute.farmhome.service.FruitImageService;
+import com.ute.farmhome.service.FruitService;
+import com.ute.farmhome.service.UserService;
 import com.ute.farmhome.utility.UpdateFile;
-import org.checkerframework.checker.units.qual.A;
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import com.ute.farmhome.entity.Fruit;
-import com.ute.farmhome.repository.FruitRepository;
-import com.ute.farmhome.service.FruitService;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class FruitServiceImplement implements FruitService {
 	@Autowired
 	private FruitImageService fruitImageService;
 	@Autowired
+	private UserService userService;
+	@Autowired
 	private FruitRepository fruitRepository;
 	@Autowired
 	private FruitImageRepository fruitImageRepository;
+	@Autowired
+	private UserRepository userRepository;
 	@Autowired
 	private UpdateFile updateFile;
 	@Autowired
@@ -111,8 +118,9 @@ public class FruitServiceImplement implements FruitService {
 			for (MultipartFile imageFile : fruitDTO.getImageFiles()) {
 				FileUpload fileUpload = new FileUpload();
 				fileUpload.setFile(imageFile);
-				fruit.getImages().forEach(fruitImage -> {updateFile.delete(fruitImage.getUrl());
-				fruitImageService.deleteImageById(fruitImage.getId());});
+				fruit.getImages().forEach(fruitImage -> {
+					fruitImageService.deleteImageById(fruitImage.getId());
+				});
 				updateFile.update(fileUpload);
 				FruitImage fruitImage = new FruitImage();
 				fruitImage.setUrl(fileUpload.getOutput());
@@ -144,6 +152,16 @@ public class FruitServiceImplement implements FruitService {
 	public Fruit findFruitById(int id) {
 		return fruitRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFound("Fruit", "id", String.valueOf(id)));
+	}
+
+	@Override
+	public void deleteById(int id) {
+		Fruit fruit = fruitRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFound("Fruit", "id", String.valueOf(id)));
+		fruit.getImages().forEach(item -> {
+			fruitImageService.deleteImageById(item.getId());
+		});
+		fruitRepository.deleteById(id);
 	}
 
 }

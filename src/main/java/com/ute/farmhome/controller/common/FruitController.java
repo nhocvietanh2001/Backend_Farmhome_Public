@@ -51,4 +51,11 @@ public class FruitController {
 
         return ResponseEntity.ok(fruitService.filterPaging(name, amount, seasonList, popular, order, no, limit));
     }
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<?> delete(@PathVariable int id) {
+        fruitService.deleteById(id);
+        HashMap message = new HashMap<>();
+        message.put("message", "Fruit deleted");
+        return ResponseEntity.ok(message);
+    }
 }

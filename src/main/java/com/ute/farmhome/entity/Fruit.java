@@ -28,7 +28,7 @@ public class Fruit {
 	LocalDate date;
 	String description;
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "userid")
 	User farmer;
 	Boolean popular;
