@@ -1,5 +1,6 @@
 package com.ute.farmhome.service.implement;
 
+import com.google.api.client.util.DateTime;
 import com.ute.farmhome.dto.OrderDTO;
 import com.ute.farmhome.dto.PaginationDTO;
 import com.ute.farmhome.entity.Fruit;
@@ -19,6 +20,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -42,6 +45,8 @@ public class OrderServiceImplement implements OrderService {
         order.setFarmer(farmer);
         User merchant = userService.findById(orderDTO.getMerchant().getId());
         order.setMerchant(merchant);
+        StatusProduct statusPending = statusService.getPendingStatusProduct();
+        order.setStatus(statusPending);
         return orderMapper.map(orderRepository.save(order));
     }
 

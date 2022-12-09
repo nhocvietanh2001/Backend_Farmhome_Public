@@ -40,11 +40,8 @@ public class OrderMapperImplement implements OrderMapper {
         Order entity = new Order();
         entity.setId(orderDTO.getId());
         entity.setPrice(orderDTO.getPrice());
-        entity.setDate(LocalDate.parse(orderDTO.getDate()));
+        entity.setDate(LocalDate.now());
         entity.setTransport(orderDTO.getTransport());
-        StatusProduct statusProduct = statusProductRepository.findById(orderDTO.getStatus().getId())
-                .orElseThrow(() -> new ResourceNotFound("StatusProduct", "id", String.valueOf(orderDTO.getStatus().getId())));
-        entity.setStatus(statusProduct);
         return entity;
     }
 }
