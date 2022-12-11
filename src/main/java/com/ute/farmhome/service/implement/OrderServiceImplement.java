@@ -87,6 +87,10 @@ public class OrderServiceImplement implements OrderService {
     public HistoryDTO acceptOrder(OrderDTO orderDTO) {
         Order order = orderRepository.findById(orderDTO.getId())
                 .orElseThrow(() -> new ResourceNotFound("Order", "id", String.valueOf(orderDTO.getId())));
-        return historyService.createHistoryFromOrder(order);
+        HistoryDTO historyDTOSaved = historyService.createHistoryFromOrder(order);
+        if (historyDTOSaved != null) {
+            orderRepository.deleteById(order.getId());
+        }
+        return historyDTOSaved;
     }
 }

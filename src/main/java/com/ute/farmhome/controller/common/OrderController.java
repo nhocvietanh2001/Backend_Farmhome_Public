@@ -42,6 +42,9 @@ public class OrderController {
     }
     @PostMapping("/accept")
     public ResponseEntity<?> acceptOrder(@RequestBody OrderDTO orderDTO) {
+        HashMap<String, String> response = new HashMap<>();
+        response.put("message", "Deleted order and created history!");
+        response.put("http code", "201");
         return new ResponseEntity<>(orderService.acceptOrder(orderDTO), HttpStatus.CREATED);
     }
 }
