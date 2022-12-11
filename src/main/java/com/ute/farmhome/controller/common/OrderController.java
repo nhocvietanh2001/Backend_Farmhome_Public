@@ -18,6 +18,10 @@ public class OrderController {
     public ResponseEntity<OrderDTO> create(@RequestBody OrderDTO dto) {
         return new ResponseEntity(orderService.createOrder(dto), HttpStatus.CREATED);
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderDTO> getById(@PathVariable int id) {
+        return ResponseEntity.ok(orderService.getById(id));
+    }
     @GetMapping("/merchant/{id}")
     public ResponseEntity<?> getByMerchant(@PathVariable int id, @RequestParam(required = false) HashMap<String, String> hashMap) {
         int no = Integer.parseInt(hashMap.getOrDefault("no", "0"));

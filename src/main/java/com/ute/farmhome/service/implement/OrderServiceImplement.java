@@ -93,4 +93,11 @@ public class OrderServiceImplement implements OrderService {
         }
         return historyDTOSaved;
     }
+
+    @Override
+    public OrderDTO getById(int id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFound("Order", "id", String.valueOf(id)));
+        return orderMapper.map(order);
+    }
 }
