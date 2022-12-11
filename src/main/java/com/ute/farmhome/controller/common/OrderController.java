@@ -21,14 +21,14 @@ public class OrderController {
     @GetMapping("/merchant/{id}")
     public ResponseEntity<?> getByMerchant(@PathVariable int id, @RequestParam(required = false) HashMap<String, String> hashMap) {
         int no = Integer.parseInt(hashMap.getOrDefault("no", "0"));
-        int limit = Integer.parseInt(hashMap.getOrDefault("limit", "5"));
+        int limit = Integer.parseInt(hashMap.getOrDefault("limit", "20"));
 
         return ResponseEntity.ok(orderService.getByMerchantId(id, no, limit));
     }
     @GetMapping("/farmer/{id}")
     public ResponseEntity<?> getByFarmer(@PathVariable int id, @RequestParam(required = false) HashMap<String, String> hashMap) {
         int no = Integer.parseInt(hashMap.getOrDefault("no", "0"));
-        int limit = Integer.parseInt(hashMap.getOrDefault("limit", "5"));
+        int limit = Integer.parseInt(hashMap.getOrDefault("limit", "20"));
 
         return ResponseEntity.ok(orderService.getByFarmerId(id, no, limit));
     }
@@ -39,5 +39,9 @@ public class OrderController {
     @PutMapping("/resend")
     public ResponseEntity<?> resendOrder(@RequestBody OrderDTO orderDTO) {
         return ResponseEntity.ok(orderService.resendOrder(orderDTO));
+    }
+    @PostMapping("/accept")
+    public ResponseEntity<?> acceptOrder(@RequestBody OrderDTO orderDTO) {
+        return new ResponseEntity<>(orderService.acceptOrder(orderDTO), HttpStatus.CREATED);
     }
 }

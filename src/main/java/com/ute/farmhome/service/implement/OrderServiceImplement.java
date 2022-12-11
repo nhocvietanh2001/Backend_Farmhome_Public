@@ -1,6 +1,7 @@
 package com.ute.farmhome.service.implement;
 
 import com.google.api.client.util.DateTime;
+import com.ute.farmhome.dto.HistoryDTO;
 import com.ute.farmhome.dto.OrderDTO;
 import com.ute.farmhome.dto.PaginationDTO;
 import com.ute.farmhome.entity.Fruit;
@@ -10,18 +11,14 @@ import com.ute.farmhome.entity.User;
 import com.ute.farmhome.exception.ResourceNotFound;
 import com.ute.farmhome.mapper.OrderMapper;
 import com.ute.farmhome.repository.OrderRepository;
-import com.ute.farmhome.service.FruitService;
-import com.ute.farmhome.service.OrderService;
-import com.ute.farmhome.service.StatusService;
-import com.ute.farmhome.service.UserService;
+import com.ute.farmhome.service.*;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -30,6 +27,8 @@ public class OrderServiceImplement implements OrderService {
     OrderRepository orderRepository;
     @Autowired
     FruitService fruitService;
+    @Autowired
+    HistoryService historyService;
     @Autowired
     UserService userService;
     @Autowired
@@ -82,5 +81,12 @@ public class OrderServiceImplement implements OrderService {
         StatusProduct statusPending = statusService.getPendingStatusProduct();
         order.setStatus(statusPending);
         return orderMapper.map(orderRepository.save(order));
+    }
+
+    @Override
+    public HistoryDTO acceptOrder(OrderDTO orderDTO) {
+        Order order = orderRepository.findById(orderDTO.getId())
+                .orElseThrow(() -> new ResourceNotFound("Order", "id", String.valueOf(orderDTO.getId())));
+        return historyService.createHistoryFromOrder(order);
     }
 }

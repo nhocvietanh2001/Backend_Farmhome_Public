@@ -11,9 +11,11 @@ import com.ute.farmhome.mapper.HistoryMapper;
 import com.ute.farmhome.mapper.UserMapper;
 import com.ute.farmhome.repository.StatusProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
+@Component
 public class HistoryMapperImplement implements HistoryMapper {
     @Autowired
     StatusProductRepository statusProductRepository;
@@ -42,5 +44,18 @@ public class HistoryMapperImplement implements HistoryMapper {
         entity.setDate(LocalDate.parse(historyDTO.getDate()));
         entity.setTransport(historyDTO.getTransport());
         return entity;
+    }
+
+    @Override
+    public History mapFromOrder(Order order) {
+        History history = new History();
+        history.setFruit(order.getFruit());
+        history.setFarmer(order.getFarmer());
+        history.setMerchant(order.getMerchant());
+        history.setPrice(order.getPrice());
+        history.setAmount(order.getAmount());
+        history.setDate(LocalDate.now());
+        history.setTransport(order.getTransport());
+        return history;
     }
 }
