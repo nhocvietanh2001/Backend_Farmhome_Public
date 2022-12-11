@@ -68,7 +68,8 @@ public class OrderServiceImplement implements OrderService {
     @Override
     public OrderDTO changePrice(OrderDTO orderDTO) {
         Order order = orderRepository.findById(orderDTO.getId()).orElseThrow(() -> new ResourceNotFound("Order", "id", String.valueOf(orderDTO.getId())));
-        order.setPrice(orderDTO.getPrice());
+        order.setDealPrice(orderDTO.getDealPrice());
+        order.setDealAmount(orderDTO.getDealAmount());
         StatusProduct statusDealing = statusService.getDealingStatusProduct();
         order.setStatus(statusDealing);
         return orderMapper.map(orderRepository.save(order));
@@ -77,7 +78,10 @@ public class OrderServiceImplement implements OrderService {
     @Override
     public OrderDTO resendOrder(OrderDTO orderDTO) {
         Order order = orderRepository.findById(orderDTO.getId()).orElseThrow(() -> new ResourceNotFound("Order", "id", String.valueOf(orderDTO.getId())));
-        order.setPrice(orderDTO.getPrice());
+        order.setPrice(orderDTO.getDealPrice());
+        order.setDealPrice(null);
+        order.setAmount(orderDTO.getDealAmount());
+        order.setDealAmount(null);
         StatusProduct statusPending = statusService.getPendingStatusProduct();
         order.setStatus(statusPending);
         return orderMapper.map(orderRepository.save(order));

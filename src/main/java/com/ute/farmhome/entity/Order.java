@@ -32,7 +32,9 @@ public class Order implements Serializable {
     @JoinColumn(name = "merchant_id")
     User merchant;
     Float price;
+    Float dealPrice;
     Integer amount;
+    Integer dealAmount;
     LocalDate date;
     Boolean transport;
     @OneToOne

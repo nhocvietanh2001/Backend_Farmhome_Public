@@ -16,7 +16,9 @@ public class OrderDTO {
     UserShowDTO farmer;
     UserShowDTO merchant;
     Float price;
+    Float dealPrice;
     Integer amount;
+    Integer dealAmount;
     String date;
     Boolean transport;
     StatusProduct status;

@@ -29,7 +29,9 @@ public class OrderMapperImplement implements OrderMapper {
         orderDTO.setFarmer(userMapper.mapToShow(entity.getFarmer()));
         orderDTO.setMerchant(userMapper.mapToShow(entity.getMerchant()));
         orderDTO.setPrice(entity.getPrice());
+        orderDTO.setDealPrice(entity.getDealPrice());
         orderDTO.setAmount(entity.getAmount());
+        orderDTO.setDealAmount(entity.getDealAmount());
         orderDTO.setDate(String.valueOf(entity.getDate()));
         orderDTO.setTransport(entity.getTransport());
         orderDTO.setStatus(entity.getStatus());
@@ -41,7 +43,9 @@ public class OrderMapperImplement implements OrderMapper {
         Order entity = new Order();
         entity.setId(orderDTO.getId());
         entity.setPrice(orderDTO.getPrice());
+        entity.setDealPrice(orderDTO.getDealPrice());
         entity.setAmount(orderDTO.getAmount());
+        entity.setDealAmount(orderDTO.getDealAmount());
         entity.setDate(LocalDate.now());
         entity.setTransport(orderDTO.getTransport());
         return entity;
