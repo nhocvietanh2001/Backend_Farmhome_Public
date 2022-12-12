@@ -22,4 +22,5 @@ public class News {
     LocalDate date;
     String imageBanner;
     String imageContent;
+    String category;
 }

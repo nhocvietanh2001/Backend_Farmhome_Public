@@ -52,6 +52,8 @@ public class NewsServiceImplement implements NewsService {
             oldNews.setImageBanner(news.getImageBanner());
         if (news.getImageContent() != null)
             oldNews.setImageContent(news.getImageContent());
+        if (news.getCategory() != null)
+            oldNews.setCategory(news.getCategory());
         oldNews.setDate(LocalDate.now());
         return newsRepository.save(oldNews);
     }

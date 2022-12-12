@@ -104,4 +104,13 @@ public class OrderServiceImplement implements OrderService {
                 .orElseThrow(() -> new ResourceNotFound("Order", "id", String.valueOf(id)));
         return orderMapper.map(order);
     }
+
+    @Override
+    public void deleteOrder(int id) {
+        try {
+            orderRepository.deleteById(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

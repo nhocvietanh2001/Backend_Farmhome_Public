@@ -12,4 +12,5 @@ public interface OrderService {
     OrderDTO resendOrder(OrderDTO orderDTO);
     HistoryDTO acceptOrder(OrderDTO orderDTO);
     OrderDTO getById(int id);
+    void deleteOrder(int id);
 }
