@@ -1,5 +1,6 @@
 package com.ute.farmhome.service.implement;
 
+import com.ute.farmhome.exception.ResourceNotFound;
 import org.springframework.data.domain.Page;
 import com.ute.farmhome.dto.HistoryDTO;
 import com.ute.farmhome.dto.PaginationDTO;
@@ -34,6 +35,12 @@ public class HistoryServiceImplement implements HistoryService {
         List<?> listHistory = historyRepository.findByFarmerOrMerchantId(id, pageable).stream().map(item -> historyMapper.map(item)).toList();
         Page<?> page = historyRepository.findByFarmerOrMerchantId(id, pageable);
         return new PaginationDTO(listHistory, page.isFirst(), page.isLast(), page.getTotalPages(), page.getTotalElements(), page.getSize(), page.getNumber());
+    }
+
+    @Override
+    public HistoryDTO getById(int id) {
+        return historyMapper.map(historyRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFound("History", "id", String.valueOf(id))));
     }
 
 }

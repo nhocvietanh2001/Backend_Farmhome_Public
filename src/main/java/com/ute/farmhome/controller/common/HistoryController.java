@@ -19,4 +19,8 @@ public class HistoryController {
 
         return ResponseEntity.ok(historyService.getByUserId(id, no, limit));
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable int id) {
+        return ResponseEntity.ok(historyService.getById(id));
+    }
 }

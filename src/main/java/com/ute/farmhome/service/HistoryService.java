@@ -8,4 +8,5 @@ import com.ute.farmhome.entity.Order;
 public interface HistoryService {
     HistoryDTO createHistoryFromOrder(Order order);
     PaginationDTO getByUserId(int id, int no, int limit);
+    HistoryDTO getById(int id);
 }
