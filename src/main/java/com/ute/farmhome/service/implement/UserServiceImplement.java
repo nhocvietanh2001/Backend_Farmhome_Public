@@ -104,6 +104,10 @@ public class UserServiceImplement implements UserService, UserDetailsService {
             userCreateDTO.setAvatar(fileUpload.getOutput());
         }
         User user = userMapper.map(userCreateDTO);
+        StatusUser statusActive = statusUserRepository.findById(1)
+                .orElseThrow(() -> new ResourceNotFound("StatusUser", "id", String.valueOf(userCreateDTO.getStatus().getId())));
+        user.setStatus(statusActive);
+
         user.setLocation(locationService.bindData(userCreateDTO.getLocation()));
         return userMapper.mapToShow(userRepository.save(user));
     }

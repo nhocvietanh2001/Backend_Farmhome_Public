@@ -50,9 +50,9 @@ public class UserMapperImplement implements UserMapper {
         user.setDescription(userCreateDTO.getDescription());
         //user.setLocation(locationMapper.map(userCreateDTO.getLocation()));
         user.setCreateDate(LocalDate.now());
-        StatusUser statusUser = statusUserRepository.findById(userCreateDTO.getStatus().getId())
-                .orElseThrow(() -> new ResourceNotFound("StatusUser", "id", String.valueOf(userCreateDTO.getStatus().getId())));
-        user.setStatus(statusUser);
+//        StatusUser statusUser = statusUserRepository.findById(userCreateDTO.getStatus().getId())
+//                .orElseThrow(() -> new ResourceNotFound("StatusUser", "id", String.valueOf(userCreateDTO.getStatus().getId())));
+//        user.setStatus(statusUser);
         userCreateDTO.getRoles().forEach(role -> {
             Role findRole = roleRepository.findById(role.getId())
                     .orElseThrow(() -> new ResourceNotFound("Role", "id", String.valueOf(role.getId())));
