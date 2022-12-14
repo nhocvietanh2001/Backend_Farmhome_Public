@@ -11,11 +11,17 @@ import java.util.List;
 
 @Service
 public class ClassifyImageService {
-    Graph inceptionGraph;
-    List<String> labels;
-    String outputLayer;
+    private final Graph inceptionGraph;
+    private final List<String> labels;
+    private final String outputLayer;
     private  int W = 224, H = 224;
     private float mean = 0, scale = 255;
+
+    public ClassifyImageService(Graph inceptionGraph, List<String> labels, String outputLayer) {
+        this.inceptionGraph = inceptionGraph;
+        this.labels = labels;
+        this.outputLayer = outputLayer;
+    }
 
     public LabelWithProbability classifyImage(byte[] imageBytes) {
         long start = System.currentTimeMillis();
