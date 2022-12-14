@@ -88,9 +88,9 @@ public class OrderServiceImplement implements OrderService {
     }
 
     @Override
-    public HistoryDTO acceptOrder(OrderDTO orderDTO) {
-        Order order = orderRepository.findById(orderDTO.getId())
-                .orElseThrow(() -> new ResourceNotFound("Order", "id", String.valueOf(orderDTO.getId())));
+    public HistoryDTO acceptOrder(int id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFound("Order", "id", String.valueOf(id)));
         HistoryDTO historyDTOSaved = historyService.createHistoryFromOrder(order);
         if (historyDTOSaved != null) {
             orderRepository.deleteById(order.getId());

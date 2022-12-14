@@ -44,12 +44,12 @@ public class OrderController {
     public ResponseEntity<?> resendOrder(@RequestBody OrderDTO orderDTO) {
         return ResponseEntity.ok(orderService.resendOrder(orderDTO));
     }
-    @PostMapping("/accept")
-    public ResponseEntity<?> acceptOrder(@RequestBody OrderDTO orderDTO) {
+    @PostMapping("/accept/{id}")
+    public ResponseEntity<?> acceptOrder(@PathVariable int id) {
         HashMap<String, String> response = new HashMap<>();
         response.put("message", "Deleted order and created history!");
         response.put("http code", "201");
-        return new ResponseEntity<>(orderService.acceptOrder(orderDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(orderService.acceptOrder(id), HttpStatus.CREATED);
     }
     @DeleteMapping("/cancel/{id}")
     public ResponseEntity<?> cancelOrder(@PathVariable int id) {

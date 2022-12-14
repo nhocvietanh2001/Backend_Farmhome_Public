@@ -10,7 +10,7 @@ public interface OrderService {
     PaginationDTO getByFarmerId(int id, int no, int limit);
     OrderDTO changePrice(OrderDTO orderDTO);
     OrderDTO resendOrder(OrderDTO orderDTO);
-    HistoryDTO acceptOrder(OrderDTO orderDTO);
+    HistoryDTO acceptOrder(int id);
     OrderDTO getById(int id);
     void deleteOrder(int id);
 }
