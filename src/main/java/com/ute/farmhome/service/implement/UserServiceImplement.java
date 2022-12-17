@@ -211,7 +211,7 @@ public class UserServiceImplement implements UserService, UserDetailsService {
         if (!validation.validatePassword(userChangePassDTO.getNewPassword())) {
             mapError.put("password", "Password must be 6 digits, have at least 1 capital, and have at least 1 number");
         }
-        if (passwordEncoder.matches(password, userChangePassDTO.getOldPassword())) {
+        if (!passwordEncoder.matches(userChangePassDTO.getOldPassword(), password)) {
             mapError.put("old password", "Password incorrect");
         }
         if (mapError.size() > 0) {
@@ -219,7 +219,6 @@ public class UserServiceImplement implements UserService, UserDetailsService {
         }
         return true;
     }
-
     private Boolean validateUpdateData(User user, UserCreateDTO userCreateDTO) {
         HashMap<String, String> mapError = new HashMap<>();
         if (!userCreateDTO.getEmail().equals(user.getEmail())) {
