@@ -3,10 +3,7 @@ package com.ute.farmhome.service.implement;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ute.farmhome.dto.FileUpload;
-import com.ute.farmhome.dto.PaginationDTO;
-import com.ute.farmhome.dto.UserCreateDTO;
-import com.ute.farmhome.dto.UserShowDTO;
+import com.ute.farmhome.dto.*;
 import com.ute.farmhome.entity.Location;
 import com.ute.farmhome.entity.Role;
 import com.ute.farmhome.entity.StatusUser;
@@ -193,6 +190,34 @@ public class UserServiceImplement implements UserService, UserDetailsService {
     public User findById(int id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("User", "id", String.valueOf(id)));
+    }
+
+    @Override
+    public Boolean changePassword(String username, UserChangePassDTO userChangePassDTO) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFound("User", "username", username));
+        if(validateChangePassword(userChangePassDTO, user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(userChangePassDTO.getNewPassword()));
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
+    private Boolean validateChangePassword(UserChangePassDTO userChangePassDTO, String password) {
+        HashMap<String, String> mapError = new HashMap<>();
+        if (!userChangePassDTO.getNewPassword().equals(userChangePassDTO.getConfirmNewPassword())) {
+            mapError.put("confirm password", "Password and confirm password does not match");
+        }
+        if (!validation.validatePassword(userChangePassDTO.getNewPassword())) {
+            mapError.put("password", "Password must be 6 digits, have at least 1 capital, and have at least 1 number");
+        }
+        if (passwordEncoder.matches(password, userChangePassDTO.getOldPassword())) {
+            mapError.put("old password", "Password incorrect");
+        }
+        if (mapError.size() > 0) {
+            throw new ValidationException(mapError);
+        }
+        return true;
     }
 
     private Boolean validateUpdateData(User user, UserCreateDTO userCreateDTO) {

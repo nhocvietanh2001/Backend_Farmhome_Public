@@ -1,5 +1,6 @@
 package com.ute.farmhome.controller.admin;
 
+import com.ute.farmhome.dto.UserChangePassDTO;
 import com.ute.farmhome.dto.UserCreateDTO;
 import com.ute.farmhome.entity.Role;
 import com.ute.farmhome.entity.StatusUser;
@@ -10,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -56,5 +60,24 @@ public class UserControllerAdmin {
     public ResponseEntity<?> updateUser(@RequestPart String user, @RequestPart(required = false) MultipartFile avatar) {
         UserCreateDTO userCreateDTO = userService.readJson(user, avatar);
         return ResponseEntity.ok(userService.updateUser(userCreateDTO));
+    }
+    @PutMapping(value = "changePassword")
+    public ResponseEntity<?> updatePassword(Authentication authentication, @RequestBody UserChangePassDTO userChangePassDTO) {
+        Object principal = SecurityContextHolder. getContext(). getAuthentication(). getPrincipal();
+        String username;
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails)principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+        HashMap<String, String> hashMap = new HashMap<>();
+        if (userService.changePassword(username, userChangePassDTO)) {
+
+            hashMap.put("message", "Success");
+
+            return ResponseEntity.ok(hashMap);
+        }
+        hashMap.put("message", "Failed");
+        return ResponseEntity.ok(hashMap);
     }
 }

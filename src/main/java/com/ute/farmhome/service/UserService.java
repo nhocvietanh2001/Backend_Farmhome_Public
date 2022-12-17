@@ -1,6 +1,7 @@
 package com.ute.farmhome.service;
 
 import com.ute.farmhome.dto.PaginationDTO;
+import com.ute.farmhome.dto.UserChangePassDTO;
 import com.ute.farmhome.dto.UserCreateDTO;
 import com.ute.farmhome.dto.UserShowDTO;
 import com.ute.farmhome.entity.User;
@@ -17,4 +18,5 @@ public interface UserService {
     UserShowDTO updateUser(UserCreateDTO userCreateDTO);
     UserShowDTO getById(int id);
     User findById(int id);
+    Boolean changePassword(String username, UserChangePassDTO userChangePassDTO);
 }

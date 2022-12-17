@@ -79,11 +79,11 @@ public class OrderServiceImplement implements OrderService {
     public OrderDTO resendOrder(OrderDTO orderDTO) {
         Order order = orderRepository.findById(orderDTO.getId()).orElseThrow(() -> new ResourceNotFound("Order", "id", String.valueOf(orderDTO.getId())));
         if(order.getDealPrice() != null) {
-            order.setPrice(orderDTO.getDealPrice());
+            order.setPrice(order.getDealPrice());
             order.setDealPrice(null);
         }
         if(order.getDealAmount() != null) {
-            order.setAmount(orderDTO.getDealAmount());
+            order.setAmount(order.getDealAmount());
             order.setDealAmount(null);
         }
         StatusProduct statusPending = statusService.getPendingStatusProduct();

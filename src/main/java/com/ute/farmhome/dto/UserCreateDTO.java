@@ -22,6 +22,7 @@ public class UserCreateDTO {
     private String username;
     private String password;
     private String confirmPassword;
+    private String newPassword;
     private MultipartFile avatarFile;
     private String avatar;
     private String firstName;
