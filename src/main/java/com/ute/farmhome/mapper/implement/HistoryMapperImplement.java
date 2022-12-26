@@ -31,7 +31,6 @@ public class HistoryMapperImplement implements HistoryMapper {
         historyDTO.setFarmer(userMapper.mapToShow(entity.getFarmer()));
         historyDTO.setMerchant(userMapper.mapToShow(entity.getMerchant()));
         historyDTO.setPrice(entity.getPrice());
-        historyDTO.setAmount(entity.getAmount());
         historyDTO.setDate(String.valueOf(entity.getDate()));
         historyDTO.setTransport(entity.getTransport());
         return historyDTO;
@@ -42,7 +41,6 @@ public class HistoryMapperImplement implements HistoryMapper {
         History entity = new History();
         entity.setId(historyDTO.getId());
         entity.setPrice(historyDTO.getPrice());
-        entity.setAmount(historyDTO.getAmount());
         entity.setDate(LocalDate.parse(historyDTO.getDate()));
         entity.setTransport(historyDTO.getTransport());
         return entity;
