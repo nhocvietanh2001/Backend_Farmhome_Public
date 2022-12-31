@@ -6,4 +6,5 @@ import com.ute.farmhome.entity.Location;
 public interface LocationService {
     Location bindData(LocationDTO dto);
     Location bindUpdateData(LocationDTO dto);
+    Location findById(int id);
 }

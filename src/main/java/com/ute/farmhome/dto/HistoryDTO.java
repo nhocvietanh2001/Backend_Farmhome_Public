@@ -20,7 +20,8 @@ public class HistoryDTO {
     UserShowDTO farmer;
     UserShowDTO merchant;
     Float price;
-    Integer amount;
+    Float amount;
     String date;
     Boolean transport;
+    LocationDTO deliveryLocation;
 }

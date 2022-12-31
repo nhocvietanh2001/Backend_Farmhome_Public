@@ -9,6 +9,7 @@ import com.ute.farmhome.dto.FruitShowDTO;
 import com.ute.farmhome.dto.PaginationDTO;
 import com.ute.farmhome.entity.Fruit;
 import com.ute.farmhome.entity.FruitImage;
+import com.ute.farmhome.entity.Order;
 import com.ute.farmhome.entity.User;
 import com.ute.farmhome.exception.ResourceNotFound;
 import com.ute.farmhome.mapper.FruitMapper;
@@ -17,6 +18,7 @@ import com.ute.farmhome.repository.FruitRepository;
 import com.ute.farmhome.repository.UserRepository;
 import com.ute.farmhome.service.FruitImageService;
 import com.ute.farmhome.service.FruitService;
+import com.ute.farmhome.service.OrderService;
 import com.ute.farmhome.service.UserService;
 import com.ute.farmhome.utility.UpdateFile;
 import net.bytebuddy.implementation.bytecode.Throw;
@@ -90,6 +92,7 @@ public class FruitServiceImplement implements FruitService {
 			}
 		}
 		Fruit fruit = fruitMapper.map(fruitDTO);
+		fruit.setRemainingWeight(fruit.getWeight());
 		fruitDTO.getImages().forEach(fruitImage -> {fruitImage.setFruit(fruit);});
 		return fruitMapper.mapToShow(fruitRepository.save(fruit));
 	}
@@ -109,6 +112,7 @@ public class FruitServiceImplement implements FruitService {
 
 		fruit.setName(fruitDTO.getName());
 		fruit.setWeight(fruitDTO.getWeight());
+		fruit.setRemainingWeight(fruit.getWeight());
 		fruit.setUnit(fruitDTO.getUnit());
 		fruit.setDate(LocalDate.parse(fruitDTO.getDate()));
 		fruit.setSeason(fruitDTO.getSeason());
@@ -164,4 +168,8 @@ public class FruitServiceImplement implements FruitService {
 		fruitRepository.deleteById(id);
 	}
 
+	@Override
+	public void save(Fruit fruit) {
+		fruitRepository.save(fruit);
+	}
 }

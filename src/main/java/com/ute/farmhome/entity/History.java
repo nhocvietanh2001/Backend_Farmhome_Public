@@ -32,7 +32,10 @@ public class History implements Serializable {
     @JoinColumn(name = "merchant_id")
     User merchant;
     Float price;
-    Integer amount;
+    Float amount;
     LocalDate date;
     Boolean transport;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "location_id")
+    private Location deliveryLocation;
 }

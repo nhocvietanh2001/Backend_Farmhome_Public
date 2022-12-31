@@ -66,4 +66,10 @@ public class ExceptionHandling {
         map.put ("message", e.getMessage());
         return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(ExceedAmount.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ResponseEntity<?> handleExceedAmount(ExceedAmount e) {
+        return ResponseEntity.badRequest().body(e.toString());
+    }
 }

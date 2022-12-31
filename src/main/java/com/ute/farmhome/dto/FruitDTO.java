@@ -18,6 +18,7 @@ public class FruitDTO {
     int id;
     String name;
     float weight;
+    float remainingWeight;
     String unit;
     List<MultipartFile> imageFiles = new ArrayList<>();
     List<FruitImage> images = new ArrayList<>();

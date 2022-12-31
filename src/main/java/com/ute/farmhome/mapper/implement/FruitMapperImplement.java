@@ -24,6 +24,7 @@ public class FruitMapperImplement implements FruitMapper {
         fruit.setId(dto.getId());
         fruit.setName(dto.getName());
         fruit.setWeight(dto.getWeight());
+        fruit.setRemainingWeight(dto.getRemainingWeight());
         fruit.setUnit(dto.getUnit());
         fruit.setImages(dto.getImages());
         fruit.setDate(LocalDate.parse(dto.getDate()));
@@ -41,6 +42,7 @@ public class FruitMapperImplement implements FruitMapper {
         dto.setId(fruit.getId());
         dto.setName(fruit.getName());
         dto.setWeight(fruit.getWeight());
+        dto.setRemainingWeight(fruit.getRemainingWeight());
         dto.setUnit(fruit.getUnit());
         dto.setImages(fruit.getImages());
         dto.setDate(String.valueOf(fruit.getDate()));
@@ -58,6 +60,7 @@ public class FruitMapperImplement implements FruitMapper {
         dto.setName(fruit.getName());
         dto.setWeight(fruit.getWeight());
         dto.setUnit(fruit.getUnit());
+        dto.setRemainingWeight(fruit.getRemainingWeight());
         dto.setImages(fruit.getImages());
         dto.setDate(fruit.getDate());
         dto.setFarmer(userMapper.mapToShow(fruit.getFarmer()));

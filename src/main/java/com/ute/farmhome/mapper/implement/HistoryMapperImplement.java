@@ -8,6 +8,7 @@ import com.ute.farmhome.entity.StatusProduct;
 import com.ute.farmhome.exception.ResourceNotFound;
 import com.ute.farmhome.mapper.FruitMapper;
 import com.ute.farmhome.mapper.HistoryMapper;
+import com.ute.farmhome.mapper.LocationMapper;
 import com.ute.farmhome.mapper.UserMapper;
 import com.ute.farmhome.repository.StatusProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class HistoryMapperImplement implements HistoryMapper {
     FruitMapper fruitMapper;
     @Autowired
     UserMapper userMapper;
+    @Autowired
+    LocationMapper locationMapper;
     @Override
     public HistoryDTO map(History entity) {
         HistoryDTO historyDTO = new HistoryDTO();
@@ -33,6 +36,7 @@ public class HistoryMapperImplement implements HistoryMapper {
         historyDTO.setPrice(entity.getPrice());
         historyDTO.setDate(String.valueOf(entity.getDate()));
         historyDTO.setTransport(entity.getTransport());
+        historyDTO.setDeliveryLocation(locationMapper.map(entity.getDeliveryLocation()));
         return historyDTO;
     }
 
@@ -43,6 +47,7 @@ public class HistoryMapperImplement implements HistoryMapper {
         entity.setPrice(historyDTO.getPrice());
         entity.setDate(LocalDate.parse(historyDTO.getDate()));
         entity.setTransport(historyDTO.getTransport());
+        entity.setDeliveryLocation(locationMapper.map(historyDTO.getDeliveryLocation()));
         return entity;
     }
 
@@ -56,6 +61,7 @@ public class HistoryMapperImplement implements HistoryMapper {
         history.setAmount(order.getAmount());
         history.setDate(LocalDate.now());
         history.setTransport(order.getTransport());
+        history.setDeliveryLocation(order.getDeliveryLocation());
         return history;
     }
 }

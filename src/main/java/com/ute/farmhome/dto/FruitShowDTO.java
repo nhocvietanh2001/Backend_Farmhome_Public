@@ -18,6 +18,7 @@ public class FruitShowDTO {
     int id;
     String name;
     float weight;
+    float remainingWeight;
     String unit;
     List<FruitImage> images = new ArrayList<>();
     String description;

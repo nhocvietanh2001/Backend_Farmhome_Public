@@ -33,11 +33,14 @@ public class Order implements Serializable {
     User merchant;
     Float price;
     Float dealPrice;
-    Integer amount;
-    Integer dealAmount;
+    Float amount;
+    Float dealAmount;
     LocalDate date;
     Boolean transport;
     @OneToOne
     @JoinColumn(name = "status_id")
     StatusProduct status;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "location_id")
+    private Location deliveryLocation;
 }

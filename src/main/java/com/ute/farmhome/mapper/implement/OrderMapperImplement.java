@@ -5,6 +5,7 @@ import com.ute.farmhome.entity.Order;
 import com.ute.farmhome.entity.StatusProduct;
 import com.ute.farmhome.exception.ResourceNotFound;
 import com.ute.farmhome.mapper.FruitMapper;
+import com.ute.farmhome.mapper.LocationMapper;
 import com.ute.farmhome.mapper.OrderMapper;
 import com.ute.farmhome.mapper.UserMapper;
 import com.ute.farmhome.repository.StatusProductRepository;
@@ -21,6 +22,8 @@ public class OrderMapperImplement implements OrderMapper {
     FruitMapper fruitMapper;
     @Autowired
     UserMapper userMapper;
+    @Autowired
+    LocationMapper locationMapper;
     @Override
     public OrderDTO map(Order entity) {
         OrderDTO orderDTO = new OrderDTO();
@@ -35,6 +38,9 @@ public class OrderMapperImplement implements OrderMapper {
         orderDTO.setDate(String.valueOf(entity.getDate()));
         orderDTO.setTransport(entity.getTransport());
         orderDTO.setStatus(entity.getStatus());
+        if (entity.getDeliveryLocation() != null) {
+            orderDTO.setDeliveryLocation(locationMapper.map(entity.getDeliveryLocation()));
+        }
         return orderDTO;
     }
 
@@ -48,6 +54,7 @@ public class OrderMapperImplement implements OrderMapper {
         entity.setDealAmount(orderDTO.getDealAmount());
         entity.setDate(LocalDate.now());
         entity.setTransport(orderDTO.getTransport());
+        //entity.setDeliveryLocation(locationMapper.map(orderDTO.getDeliveryLocation()));
         return entity;
     }
 }

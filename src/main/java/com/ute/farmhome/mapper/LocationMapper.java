@@ -7,4 +7,6 @@ import org.mapstruct.Mapper;
 @Mapper
 public interface LocationMapper {
     Location map(LocationDTO locationDTO);
+    LocationDTO map(Location entity);
+
 }

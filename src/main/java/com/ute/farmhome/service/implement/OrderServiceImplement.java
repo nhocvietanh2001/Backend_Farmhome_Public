@@ -1,18 +1,14 @@
 package com.ute.farmhome.service.implement;
 
-import com.google.api.client.util.DateTime;
 import com.ute.farmhome.dto.HistoryDTO;
 import com.ute.farmhome.dto.OrderDTO;
 import com.ute.farmhome.dto.PaginationDTO;
-import com.ute.farmhome.entity.Fruit;
-import com.ute.farmhome.entity.Order;
-import com.ute.farmhome.entity.StatusProduct;
-import com.ute.farmhome.entity.User;
+import com.ute.farmhome.entity.*;
+import com.ute.farmhome.exception.ExceedAmount;
 import com.ute.farmhome.exception.ResourceNotFound;
 import com.ute.farmhome.mapper.OrderMapper;
 import com.ute.farmhome.repository.OrderRepository;
 import com.ute.farmhome.service.*;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,6 +30,8 @@ public class OrderServiceImplement implements OrderService {
     @Autowired
     StatusService statusService;
     @Autowired
+    LocationService locationService;
+    @Autowired
     OrderMapper orderMapper;
     @Override
     public OrderDTO createOrder(OrderDTO orderDTO) {
@@ -46,6 +44,10 @@ public class OrderServiceImplement implements OrderService {
         order.setMerchant(merchant);
         StatusProduct statusPending = statusService.getPendingStatusProduct();
         order.setStatus(statusPending);
+        if (orderDTO.getDeliveryLocation() != null) {
+            Location location = locationService.findById(orderDTO.getDeliveryLocation().getId());
+            order.setDeliveryLocation(location);
+        }
         return orderMapper.map(orderRepository.save(order));
     }
 
@@ -95,13 +97,34 @@ public class OrderServiceImplement implements OrderService {
     public HistoryDTO acceptOrder(int id) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("Order", "id", String.valueOf(id)));
+        Fruit fruit = fruitService.findFruitById(order.getFruit().getId());
+        if (fruit.getRemainingWeight() == fruit.getWeight()) {
+            fruit.setRemainingWeight(fruit.getWeight() - order.getAmount());
+            fruitService.save(fruit);
+        } else {
+            if (fruit.getRemainingWeight() < order.getAmount()) {
+                throw new ExceedAmount();
+            } else {
+                fruit.setRemainingWeight(fruit.getRemainingWeight() - order.getAmount());
+                fruitService.save(fruit);
+            }
+        }
         HistoryDTO historyDTOSaved = historyService.createHistoryFromOrder(order);
         if (historyDTOSaved != null) {
             orderRepository.deleteById(order.getId());
         }
         return historyDTOSaved;
     }
-
+    private void calculateRemaining(int id) {
+        Fruit fruit = fruitService.findFruitById(id);
+        List<Order> orders = getByFruitId(id);
+        float totalWeight = 0;
+        for (Order order : orders) {
+            totalWeight += order.getAmount();
+        }
+        fruit.setRemainingWeight(fruit.getWeight() - totalWeight);
+        fruitService.save(fruit);
+    }
     @Override
     public OrderDTO getById(int id) {
         Order order = orderRepository.findById(id)
@@ -116,5 +139,10 @@ public class OrderServiceImplement implements OrderService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public List<Order> getByFruitId(int id) {
+        return orderRepository.findByFruitId(id);
     }
 }

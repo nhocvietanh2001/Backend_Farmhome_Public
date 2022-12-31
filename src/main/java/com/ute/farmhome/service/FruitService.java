@@ -20,4 +20,5 @@ public interface FruitService {
 	PaginationDTO filterPaging(String name, Float amount, List<String> seasonList, Boolean popular, String order, int no, int limit);
 	Fruit findFruitById(int id);
 	void deleteById(int id);
+	void save(Fruit fruit);
 }

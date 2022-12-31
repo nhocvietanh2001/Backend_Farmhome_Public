@@ -17,9 +17,10 @@ public class OrderDTO {
     UserShowDTO merchant;
     Float price;
     Float dealPrice;
-    Integer amount;
-    Integer dealAmount;
+    Float amount;
+    Float dealAmount;
     String date;
     Boolean transport;
     StatusProduct status;
+    LocationDTO deliveryLocation;
 }

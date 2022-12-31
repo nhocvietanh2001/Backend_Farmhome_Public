@@ -22,6 +22,7 @@ public class Fruit {
 	int id;
 	String name;
 	float weight;
+	float remainingWeight;
 	String unit;
 	@OneToMany(mappedBy = "fruit", cascade = CascadeType.ALL)
 	List<FruitImage> images = new ArrayList<>();

@@ -33,4 +33,10 @@ public class LocationServiceImplement implements LocationService {
         return location;
     }
 
+    @Override
+    public Location findById(int id) {
+        return locationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFound("Location", "id", String.valueOf(id)));
+    }
+
 }

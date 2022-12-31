@@ -20,4 +20,12 @@ public class LocationMapperImplement implements LocationMapper {
         entity.setWard(wardMapper.map(locationDTO.getWard()));
         return entity;
     }
+    @Override
+    public LocationDTO map(Location entity) {
+        LocationDTO locationDTO = new LocationDTO();
+        locationDTO.setId(entity.getId());
+        locationDTO.setAddress(entity.getAddress());
+        locationDTO.setWard(wardMapper.map(entity.getWard()));
+        return locationDTO;
+    }
 }
