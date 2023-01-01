@@ -61,7 +61,9 @@ public class HistoryMapperImplement implements HistoryMapper {
         history.setAmount(order.getAmount());
         history.setDate(LocalDate.now());
         history.setTransport(order.getTransport());
-        history.setDeliveryLocation(order.getDeliveryLocation());
+        if (order.getDeliveryLocation()!=null) {
+            history.setDeliveryLocation(order.getDeliveryLocation());
+        }
         return history;
     }
 }
