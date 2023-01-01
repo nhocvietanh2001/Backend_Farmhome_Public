@@ -6,6 +6,7 @@ import com.ute.farmhome.dto.PaginationDTO;
 import com.ute.farmhome.entity.*;
 import com.ute.farmhome.exception.ExceedAmount;
 import com.ute.farmhome.exception.ResourceNotFound;
+import com.ute.farmhome.mapper.LocationMapper;
 import com.ute.farmhome.mapper.OrderMapper;
 import com.ute.farmhome.repository.OrderRepository;
 import com.ute.farmhome.service.*;
@@ -33,6 +34,8 @@ public class OrderServiceImplement implements OrderService {
     LocationService locationService;
     @Autowired
     OrderMapper orderMapper;
+    @Autowired
+    LocationMapper locationMapper;
     @Override
     public OrderDTO createOrder(OrderDTO orderDTO) {
         Order order = orderMapper.map(orderDTO);
@@ -45,8 +48,14 @@ public class OrderServiceImplement implements OrderService {
         StatusProduct statusPending = statusService.getPendingStatusProduct();
         order.setStatus(statusPending);
         if (orderDTO.getDeliveryLocation() != null) {
-            Location location = locationService.findById(orderDTO.getDeliveryLocation().getId());
-            order.setDeliveryLocation(location);
+            if (orderDTO.getDeliveryLocation().getId() != 0) {
+                Location location = locationService.findById(orderDTO.getDeliveryLocation().getId());
+                order.setDeliveryLocation(location);
+            }
+            if (orderDTO.getDeliveryLocation().getWard() != null) {
+                order.setDeliveryLocation(locationService.bindData(orderDTO.getDeliveryLocation()));
+
+            }
         }
         return orderMapper.map(orderRepository.save(order));
     }

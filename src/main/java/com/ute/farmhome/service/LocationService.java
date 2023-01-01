@@ -7,4 +7,5 @@ public interface LocationService {
     Location bindData(LocationDTO dto);
     Location bindUpdateData(LocationDTO dto);
     Location findById(int id);
+    LocationDTO findByUserId(int id);
 }

@@ -3,6 +3,7 @@ package com.ute.farmhome.service.implement;
 import com.ute.farmhome.dto.LocationDTO;
 import com.ute.farmhome.entity.Location;
 import com.ute.farmhome.exception.ResourceNotFound;
+import com.ute.farmhome.mapper.LocationMapper;
 import com.ute.farmhome.repository.LocationRepository;
 import com.ute.farmhome.service.DistrictService;
 import com.ute.farmhome.service.LocationService;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 public class LocationServiceImplement implements LocationService {
     @Autowired
     private LocationRepository locationRepository;
+    @Autowired
+    private LocationMapper locationMapper;
     @Autowired
     private WardService wardService;
     @Override
@@ -37,6 +40,12 @@ public class LocationServiceImplement implements LocationService {
     public Location findById(int id) {
         return locationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("Location", "id", String.valueOf(id)));
+    }
+
+    @Override
+    public LocationDTO findByUserId(int id) {
+        Location location = locationRepository.findByUserId(id);
+        return locationMapper.map(location);
     }
 
 }
