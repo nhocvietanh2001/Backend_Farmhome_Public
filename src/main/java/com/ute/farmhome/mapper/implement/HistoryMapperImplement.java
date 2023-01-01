@@ -36,7 +36,9 @@ public class HistoryMapperImplement implements HistoryMapper {
         historyDTO.setPrice(entity.getPrice());
         historyDTO.setDate(String.valueOf(entity.getDate()));
         historyDTO.setTransport(entity.getTransport());
-        historyDTO.setDeliveryLocation(locationMapper.map(entity.getDeliveryLocation()));
+        if (entity.getDeliveryLocation()!=null) {
+            historyDTO.setDeliveryLocation(locationMapper.map(entity.getDeliveryLocation()));
+        }
         return historyDTO;
     }
 
@@ -47,7 +49,8 @@ public class HistoryMapperImplement implements HistoryMapper {
         entity.setPrice(historyDTO.getPrice());
         entity.setDate(LocalDate.parse(historyDTO.getDate()));
         entity.setTransport(historyDTO.getTransport());
-        entity.setDeliveryLocation(locationMapper.map(historyDTO.getDeliveryLocation()));
+        if (historyDTO.getDeliveryLocation()!=null)
+            entity.setDeliveryLocation(locationMapper.map(historyDTO.getDeliveryLocation()));
         return entity;
     }
 
