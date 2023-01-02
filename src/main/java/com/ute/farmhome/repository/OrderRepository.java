@@ -11,9 +11,9 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends CrudRepository<Order, Integer> {
-    @Query("SELECT o FROM Order o WHERE o.merchant.id = :id")
+    @Query("SELECT o FROM Order o WHERE o.merchant.id = :id ORDER BY o.id DESC")
     Page<Order> findByMerchantId(int id, Pageable pageable);
-    @Query("SELECT o FROM Order o WHERE o.farmer.id = :id")
+    @Query("SELECT o FROM Order o WHERE o.farmer.id = :id ORDER BY o.id DESC")
     Page<Order> findByFarmerId(int id, Pageable pageable);
     @Query("SELECT o FROM Order o WHERE o.fruit.id = :id")
     List<Order> findByFruitId(int id);
