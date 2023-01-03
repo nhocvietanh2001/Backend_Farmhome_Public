@@ -1,27 +1,22 @@
-package com.ute.farmhome.entity;
+package com.ute.farmhome.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.*;
 import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Entity
-@Table(name = "news")
-public class News {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class NewsDTO {
     private int id;
     String title;
-    @Column (columnDefinition = "TEXT")
     String content;
     String author;
     LocalDate date;
-    String imageBanner;
-    String imageContent;
+    MultipartFile imageBanner;
+    MultipartFile imageContent;
     String category;
 }

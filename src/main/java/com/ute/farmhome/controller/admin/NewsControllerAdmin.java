@@ -4,8 +4,10 @@ import com.ute.farmhome.entity.News;
 import com.ute.farmhome.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 
@@ -14,9 +16,11 @@ import java.util.HashMap;
 public class NewsControllerAdmin {
     @Autowired
     NewsService newsService;
-    @PostMapping("/create")
-    public ResponseEntity<?> createNews(@RequestBody News news) {
-        return new ResponseEntity(newsService.createNews(news), HttpStatus.CREATED);
+    @PostMapping(value = "/create", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> createNews(@RequestPart("imageBanner")MultipartFile imageBanner,
+                                        @RequestPart("imageContent")MultipartFile imageContent,
+                                        @RequestPart("news")News news) {
+        return new ResponseEntity(newsService.createNews(news, imageBanner, imageContent), HttpStatus.CREATED);
     }
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable int id) {

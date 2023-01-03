@@ -1,15 +1,19 @@
 package com.ute.farmhome.service.implement;
 
+import com.ute.farmhome.dto.FileUpload;
 import com.ute.farmhome.dto.PaginationDTO;
+import com.ute.farmhome.entity.FruitImage;
 import com.ute.farmhome.entity.News;
 import com.ute.farmhome.exception.ResourceNotFound;
 import com.ute.farmhome.repository.NewsRepository;
 import com.ute.farmhome.service.NewsService;
+import com.ute.farmhome.utility.UpdateFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,9 +22,18 @@ import java.util.List;
 public class NewsServiceImplement implements NewsService {
     @Autowired
     NewsRepository newsRepository;
+    @Autowired
+    UpdateFile updateFile;
     @Override
-    public News createNews(News news) {
+    public News createNews(News news, MultipartFile imageBanner, MultipartFile imageContent) {
         news.setDate(LocalDate.now());
+        FileUpload fileUpload = new FileUpload();
+        fileUpload.setFile(imageBanner);
+        updateFile.update(fileUpload);
+        news.setImageBanner(fileUpload.getOutput());
+        fileUpload.setFile(imageContent);
+        updateFile.update(fileUpload);
+        news.setImageContent(fileUpload.getOutput());
         return newsRepository.save(news);
     }
 
