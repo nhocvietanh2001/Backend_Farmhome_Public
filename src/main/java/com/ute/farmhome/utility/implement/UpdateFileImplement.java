@@ -22,7 +22,7 @@ public class UpdateFileImplement implements UpdateFile {
     @Autowired
     Storage storage;
 
-    String bucketName = "farmhome1";
+    String bucketName = "farmhome-storage";
     String imageFolderName = "image/";
     @Override
     public void update(FileUpload fileUpload) {
@@ -31,7 +31,7 @@ public class UpdateFileImplement implements UpdateFile {
             fileUpload.setOutput(LocalDateTime.now().format(formatter) +
                     fileUpload.getFile().getOriginalFilename().substring(fileUpload.getFile().getOriginalFilename().lastIndexOf(".")));
 
-            Credentials credentials = GoogleCredentials.fromStream(new ClassPathResource("keypva.json").getInputStream());
+            Credentials credentials = GoogleCredentials.fromStream(new ClassPathResource("keytestpubg.json").getInputStream());
             Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
 
             BlobId blobId = BlobId.of(bucketName,imageFolderName + fileUpload.getOutput());
@@ -51,7 +51,7 @@ public class UpdateFileImplement implements UpdateFile {
         try {
             String name = imageFolderName + fullPath.substring(fullPath.lastIndexOf("/") + 1);
 
-            Credentials credentials = GoogleCredentials.fromStream(new ClassPathResource("keypva.json").getInputStream());
+            Credentials credentials = GoogleCredentials.fromStream(new ClassPathResource("keytestpubg.json").getInputStream());
             Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
             Blob blob = storage.get(bucketName, name);
             storage.delete(bucketName, name);

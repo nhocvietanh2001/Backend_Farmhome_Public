@@ -12,6 +12,7 @@ import com.ute.farmhome.dto.JwtResponse;
 import com.ute.farmhome.dto.LoginRequest;
 import com.ute.farmhome.entity.Role;
 import com.ute.farmhome.entity.User;
+import com.ute.farmhome.service.UserLoginService;
 import com.ute.farmhome.service.UserService;
 import com.ute.farmhome.utility.JwtUtils;
 import org.slf4j.Logger;
@@ -47,6 +48,8 @@ public class LoginController {
     private JwtUtils jwtUtils;
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserLoginService userLoginService;
 
     public final Logger logger = LoggerFactory.getLogger("info");
 
@@ -59,9 +62,13 @@ public class LoginController {
         String refreshToken = this.jwtUtils.generateJwtRefreshToken(authentication);
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
         User userDto = userService.findByUsername(user.getUsername());
-        long id = userDto.getId();
-        List<String> roles = user.getAuthorities().stream().map(item -> item.getAuthority()).collect(Collectors.toList());
-        return new ResponseEntity<JwtResponse>(new JwtResponse(accessToken, refreshToken, user.getUsername(), userDto.getAvatar(), id), HttpStatus.CREATED);
+
+        if(loginRequest.getDeviceId()!=null && loginRequest.getDeviceId()!="") {
+            userLoginService.save(userDto, loginRequest.getDeviceId());
+        }
+
+        //List<String> roles = user.getAuthorities().stream().map(item -> item.getAuthority()).collect(Collectors.toList());
+        return new ResponseEntity<JwtResponse>(new JwtResponse(accessToken, refreshToken, user.getUsername(), userDto.getAvatar(), userDto.getId()), HttpStatus.CREATED);
     }
     @GetMapping(value = "/refreshToken")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws StreamWriteException, DatabindException, IOException
