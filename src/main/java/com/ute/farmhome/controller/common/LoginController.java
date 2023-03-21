@@ -67,8 +67,7 @@ public class LoginController {
             userLoginService.save(userDto, loginRequest.getDeviceId());
         }
 
-        //List<String> roles = user.getAuthorities().stream().map(item -> item.getAuthority()).collect(Collectors.toList());
-        return new ResponseEntity<JwtResponse>(new JwtResponse(accessToken, refreshToken, user.getUsername(), userDto.getAvatar(), userDto.getId()), HttpStatus.CREATED);
+        return new ResponseEntity<JwtResponse>(new JwtResponse(accessToken, refreshToken, user.getUsername(), userDto.getFirstName(), userDto.getLastName(), userDto.getAvatar(), userDto.getId()), HttpStatus.CREATED);
     }
     @GetMapping(value = "/refreshToken")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws StreamWriteException, DatabindException, IOException
