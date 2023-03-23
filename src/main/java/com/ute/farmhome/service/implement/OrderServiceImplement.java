@@ -1,6 +1,7 @@
 package com.ute.farmhome.service.implement;
 
 import com.ute.farmhome.dto.HistoryDTO;
+import com.ute.farmhome.dto.NotificationNote;
 import com.ute.farmhome.dto.OrderDTO;
 import com.ute.farmhome.dto.PaginationDTO;
 import com.ute.farmhome.entity.*;
@@ -29,9 +30,13 @@ public class OrderServiceImplement implements OrderService {
     @Autowired
     UserService userService;
     @Autowired
+    UserLoginService userLoginService;
+    @Autowired
     StatusService statusService;
     @Autowired
     LocationService locationService;
+    @Autowired
+    FirebaseMessagingService messagingService;
     @Autowired
     OrderMapper orderMapper;
     @Autowired
@@ -78,17 +83,29 @@ public class OrderServiceImplement implements OrderService {
 
     @Override
     public OrderDTO changePrice(OrderDTO orderDTO) {
-        Order order = orderRepository.findById(orderDTO.getId()).orElseThrow(() -> new ResourceNotFound("Order", "id", String.valueOf(orderDTO.getId())));
+        Order order = orderRepository.findById(orderDTO.getId())
+                .orElseThrow(() -> new ResourceNotFound("Order", "id", String.valueOf(orderDTO.getId())));
+        Fruit fruit = fruitService.findFruitById(order.getFruit().getId());
         order.setDealPrice(orderDTO.getDealPrice());
         order.setDealAmount(orderDTO.getDealAmount());
         StatusProduct statusDealing = statusService.getDealingStatusProduct();
         order.setStatus(statusDealing);
+        //notify user the price changed
+        userLoginService.findByUserId(order.getMerchant().getId()).ifPresent(userLogin -> {
+            try {
+                messagingService.sendNotification(new NotificationNote("Your order has changed price", "Order with the product name '" + fruit.getName() + "' has changed price!", fruit.getImages().get(0).getUrl()),
+                        userLogin.getDeviceId());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
         return orderMapper.map(orderRepository.save(order));
     }
 
     @Override
     public OrderDTO resendOrder(OrderDTO orderDTO) {
-        Order order = orderRepository.findById(orderDTO.getId()).orElseThrow(() -> new ResourceNotFound("Order", "id", String.valueOf(orderDTO.getId())));
+        Order order = orderRepository.findById(orderDTO.getId())
+                .orElseThrow(() -> new ResourceNotFound("Order", "id", String.valueOf(orderDTO.getId())));
         if(order.getDealPrice() != null) {
             order.setPrice(order.getDealPrice());
             order.setDealPrice(null);
@@ -122,6 +139,15 @@ public class OrderServiceImplement implements OrderService {
         if (historyDTOSaved != null) {
             orderRepository.deleteById(order.getId());
         }
+        //notify user order has been accepted if user login with phone and have notification registration token
+        userLoginService.findByUserId(order.getMerchant().getId()).ifPresent(userLogin -> {
+            try {
+                messagingService.sendNotification(new NotificationNote("Your order has been accepted", "Order with the product name '" + fruit.getName() + "' has been accepted!", fruit.getImages().get(0).getUrl()),
+                        userLogin.getDeviceId());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
         return historyDTOSaved;
     }
     private void calculateRemaining(int id) {
@@ -143,11 +169,17 @@ public class OrderServiceImplement implements OrderService {
 
     @Override
     public void deleteOrder(int id) {
-        try {
-            orderRepository.deleteById(id);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        OrderDTO orderDTO = getById(id);
+        Fruit fruit = fruitService.findFruitById(orderDTO.getFruit().getId());
+        userLoginService.findByUserId(orderDTO.getMerchant().getId()).ifPresent(userLogin -> {
+            try {
+                messagingService.sendNotification(new NotificationNote("Your order has been declined", "Order with the product name '" + fruit.getName() + "' has been declined!", null),
+                        userLogin.getDeviceId());
+                orderRepository.deleteById(id);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @Override

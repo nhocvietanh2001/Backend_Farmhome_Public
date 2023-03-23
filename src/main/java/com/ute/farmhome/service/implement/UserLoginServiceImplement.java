@@ -7,6 +7,8 @@ import com.ute.farmhome.service.UserLoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserLoginServiceImplement implements UserLoginService {
     @Autowired
@@ -21,5 +23,11 @@ public class UserLoginServiceImplement implements UserLoginService {
         userLogin.setDeviceId(deviceId);
         userLogin = userLoginRepository.save(userLogin);
         return userLogin;
+    }
+
+    @Override
+    public Optional<UserLogin> findByUserId(int id) {
+
+        return userLoginRepository.findByUserId(id);
     }
 }
