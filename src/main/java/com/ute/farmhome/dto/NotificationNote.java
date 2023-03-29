@@ -11,4 +11,6 @@ public class NotificationNote {
     String title;
     String content;
     String imgUrl;
+    String type;
+    int id;
 }

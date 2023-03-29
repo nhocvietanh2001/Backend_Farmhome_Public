@@ -16,7 +16,8 @@ public class FirebaseMessagingServiceImplement implements FirebaseMessagingServi
     @Override
     public String sendNotification(NotificationNote note, String token) throws FirebaseMessagingException {
         Notification notification = Notification.builder().setTitle(note.getTitle()).setBody(note.getContent()).setImage(note.getImgUrl()).build();
-        Message message = Message.builder().setToken(token).setNotification(notification).build();
+        Message message = Message.builder().setToken(token).setNotification(notification).putData("type", note.getType()).putData("id", String.valueOf(note.getId())).build();
+
         return firebaseMessaging.send(message);
     }
 }
