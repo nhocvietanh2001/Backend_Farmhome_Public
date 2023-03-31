@@ -32,4 +32,8 @@ public class FruitControllerAdmin {
 		return ResponseEntity.ok(fruitService.updateFruit(fruitDTO));
 	}
 
+	@GetMapping("/suggestPrice/{fruitName}")
+	public ResponseEntity<?> getSuggestPrice(@PathVariable String fruitName) throws Exception {
+		return ResponseEntity.ok(fruitService.crawlData(fruitName));
+	}
 }

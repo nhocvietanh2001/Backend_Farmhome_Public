@@ -1,5 +1,6 @@
 package com.ute.farmhome.service;
 
+import java.net.MalformedURLException;
 import java.util.List;
 
 import com.ute.farmhome.dto.FruitDTO;
@@ -21,4 +22,5 @@ public interface FruitService {
 	Fruit findFruitById(int id);
 	void deleteById(int id);
 	void save(Fruit fruit);
+	String crawlData(String fruitName) throws Exception;
 }
