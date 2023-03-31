@@ -38,6 +38,8 @@ public class OrderServiceImplement implements OrderService {
     @Autowired
     FirebaseMessagingService messagingService;
     @Autowired
+    NotificationHistoryService notificationHistoryService;
+    @Autowired
     OrderMapper orderMapper;
     @Autowired
     LocationMapper locationMapper;
@@ -93,11 +95,13 @@ public class OrderServiceImplement implements OrderService {
         //notify user the price changed
         userLoginService.findByUserId(order.getMerchant().getId()).ifPresent(userLogin -> {
             try {
-                messagingService.sendNotification(new NotificationNote("Your order has changed price",
-                                "Order with the product name '" + fruit.getName() + "' has changed price!",
-                                fruit.getImages().get(0).getUrl(),
-                                "order",
-                                order.getId()),
+                NotificationNote notificationNote = new NotificationNote("Your order has changed price",
+                        "Order with the product name '" + fruit.getName() + "' has changed price!",
+                        fruit.getImages().get(0).getUrl(),
+                        "order",
+                        order.getId());
+                notificationHistoryService.save(notificationNote, userLogin.getUser());
+                messagingService.sendNotification(notificationNote,
                         userLogin.getDeviceId());
             } catch (Exception e) {
                 e.printStackTrace();
@@ -146,11 +150,13 @@ public class OrderServiceImplement implements OrderService {
         //notify user order has been accepted if user login with phone and have notification registration token
         userLoginService.findByUserId(order.getMerchant().getId()).ifPresent(userLogin -> {
             try {
-                messagingService.sendNotification(new NotificationNote("Your order has been accepted",
-                                "Order with the product name '" + fruit.getName() + "' has been accepted!",
-                                fruit.getImages().get(0).getUrl(),
-                                "order",
-                                order.getId()),
+                NotificationNote notificationNote = new NotificationNote("Your order has been accepted",
+                        "Order with the product name '" + fruit.getName() + "' has been accepted!",
+                        fruit.getImages().get(0).getUrl(),
+                        "order",
+                        order.getId());
+                notificationHistoryService.save(notificationNote, userLogin.getUser());
+                messagingService.sendNotification(notificationNote,
                         userLogin.getDeviceId());
             } catch (Exception e) {
                 e.printStackTrace();
@@ -181,12 +187,12 @@ public class OrderServiceImplement implements OrderService {
         Fruit fruit = fruitService.findFruitById(orderDTO.getFruit().getId());
         userLoginService.findByUserId(orderDTO.getMerchant().getId()).ifPresent(userLogin -> {
             try {
-                messagingService.sendNotification(new NotificationNote("Your order has been declined",
-                                "Order with the product name '" + fruit.getName() + "' has been declined!",
-                                null,
-                                "order",
-                                0),
-                        userLogin.getDeviceId());
+                NotificationNote notificationNote = new NotificationNote("Your order has been declined",
+                        "Order with the product name '" + fruit.getName() + "' has been declined!",
+                        null,
+                        "home",
+                        0);
+                messagingService.sendNotification(notificationNote, userLogin.getDeviceId());
                 orderRepository.deleteById(id);
             } catch (Exception e) {
                 e.printStackTrace();
