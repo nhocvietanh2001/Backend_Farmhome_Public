@@ -12,6 +12,7 @@ import com.ute.farmhome.dto.JwtResponse;
 import com.ute.farmhome.dto.LoginRequest;
 import com.ute.farmhome.entity.Role;
 import com.ute.farmhome.entity.User;
+import com.ute.farmhome.exception.RoleAuthenticationException;
 import com.ute.farmhome.service.UserLoginService;
 import com.ute.farmhome.service.UserService;
 import com.ute.farmhome.utility.JwtUtils;
@@ -30,10 +31,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
@@ -68,6 +66,23 @@ public class LoginController {
         }
 
         return new ResponseEntity<JwtResponse>(new JwtResponse(accessToken, refreshToken, user.getUsername(), userDto.getFirstName(), userDto.getLastName(), userDto.getAvatar(), userDto.getId()), HttpStatus.CREATED);
+    }
+    @PostMapping("/signinAdmin")
+    public ResponseEntity<?> authenticateAdmin(@Validated @RequestBody LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String accessToken = this.jwtUtils.generateJwtAccessToken(authentication);
+        String refreshToken = this.jwtUtils.generateJwtRefreshToken(authentication);
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+        User userDto = userService.findByUsername(user.getUsername());
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN"))) {
+            return new ResponseEntity<JwtResponse>(new JwtResponse(accessToken, refreshToken, user.getUsername(), userDto.getFirstName(), userDto.getLastName(), userDto.getAvatar(), userDto.getId()), HttpStatus.CREATED);
+        }
+
+        throw new RoleAuthenticationException("User does not have the admin role");
     }
     @GetMapping(value = "/refreshToken")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws StreamWriteException, DatabindException, IOException

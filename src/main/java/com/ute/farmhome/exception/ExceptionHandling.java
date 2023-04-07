@@ -57,7 +57,14 @@ public class ExceptionHandling {
         map.put("message", e.getMessage());
         return new ResponseEntity<>(map, HttpStatus.UNAUTHORIZED);
     }
-
+    @ExceptionHandler(RoleAuthenticationException.class)
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<?> handleRoleAuthenticationFail(RoleAuthenticationException e){
+        Map<String, String> map = new HashMap<>();
+        map.put("status code", "401");
+        map.put("message", e.getMessage());
+        return new ResponseEntity<>(map, HttpStatus.UNAUTHORIZED);
+    }
     @ExceptionHandler(FileSizeLimitExceededException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> handleFileSizeExceed(FileSizeLimitExceededException e) {

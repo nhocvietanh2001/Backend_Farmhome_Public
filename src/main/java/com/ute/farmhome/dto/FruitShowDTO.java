@@ -26,4 +26,5 @@ public class FruitShowDTO {
     UserShowDTO farmer;
     Boolean popular;
     String season;
+    String suggestPrice;
 }

@@ -54,13 +54,19 @@ public class FruitServiceImplement implements FruitService {
 	@Override
 	public PaginationDTO getAllFruit(int no, int limit) {
 		PageRequest pageRequest = PageRequest.of(no, limit);
-		List<FruitShowDTO> fruits = fruitRepository.findAllFruit(pageRequest).stream().map(item -> fruitMapper.mapToShow(item)).toList();
+		List<FruitShowDTO> fruits = fruitRepository.findAllFruit(pageRequest).stream().map(item -> {
+			try {
+				return addSuggestPrice(fruitMapper.mapToShow(item));
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}).toList();
 		Page<Fruit> page = fruitRepository.findAllFruit(pageRequest);
 		return new PaginationDTO(fruits, page.isFirst(), page.isLast(), page.getTotalPages(), page.getTotalElements(), page.getSize(), page.getNumber());
 	}
 	@Override
-	public FruitShowDTO getFruitById(int id) {
-		return fruitMapper.mapToShow(fruitRepository.findById(id).get());
+	public FruitShowDTO getFruitById(int id) throws Exception {
+		return addSuggestPrice(fruitMapper.mapToShow(fruitRepository.findById(id).get()));
 	}
 	@Override
 	public FruitDTO readJson(String fruit, List<MultipartFile> images) {
@@ -102,7 +108,13 @@ public class FruitServiceImplement implements FruitService {
 	@Override
 	public PaginationDTO searchFruit(String name, int no, int limit) {
 		Pageable pageable = PageRequest.of(no, limit);
-		List<FruitShowDTO> listFruit = fruitRepository.searchByName(name, pageable).stream().map(item -> fruitMapper.mapToShow(item)).toList();
+		List<FruitShowDTO> listFruit = fruitRepository.searchByName(name, pageable).stream().map(item -> {
+			try {
+				return addSuggestPrice(fruitMapper.mapToShow(item));
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}).toList();
 		Page<Fruit> page = fruitRepository.searchByName(name, pageable);
 		return new PaginationDTO(listFruit, page.isFirst(), page.isLast(), page.getTotalPages(), page.getTotalElements(), page.getSize(), page.getNumber());
 	}
@@ -141,7 +153,13 @@ public class FruitServiceImplement implements FruitService {
 	@Override
 	public PaginationDTO getFruitByUserId(int id, int no, int limit) {
 		Pageable pageable = PageRequest.of(no, limit);
-		List<?> listFruit = fruitRepository.getFruitByUserId(id, pageable).stream().map(item -> fruitMapper.mapToShow(item)).toList();
+		List<?> listFruit = fruitRepository.getFruitByUserId(id, pageable).stream().map(item -> {
+			try {
+				return addSuggestPrice(fruitMapper.mapToShow(item));
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}).toList();
 		Page<?> page = fruitRepository.getFruitByUserId(id, pageable);
 		return new PaginationDTO(listFruit, page.isFirst(), page.isLast(), page.getTotalPages(), page.getTotalElements(), page.getSize(), page.getNumber());
 	}
@@ -205,10 +223,18 @@ public class FruitServiceImplement implements FruitService {
 	private String filterFruitName(String fruitName) {
 		String wordToRemove = "trái ";
 		String removedString = fruitName.replaceAll("\\b" + wordToRemove + "\\b", ""); 	//remove "trái "
+
+		wordToRemove = "Trái ";
+		removedString = removedString.replaceAll("\\b" + wordToRemove + "\\b", ""); 	//remove "Trái "
 		//modifiedString = modifiedString.replaceAll("\\s", ""); 							//remove all whitespace
 
 		String[] words = removedString.split("\\s+"); //split words by space
 
 		return words[0]; //return first word
+	}
+
+	private FruitShowDTO addSuggestPrice(FruitShowDTO fruitShowDTO) throws Exception {
+		fruitShowDTO.setSuggestPrice(crawlData(fruitShowDTO.getName()));
+		return fruitShowDTO;
 	}
 }

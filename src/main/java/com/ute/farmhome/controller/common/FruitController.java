@@ -15,7 +15,7 @@ public class FruitController {
     @Autowired
     FruitService fruitService;
     @GetMapping("/{id}")
-    public ResponseEntity<?> getFruitByID(@PathVariable int id) {
+    public ResponseEntity<?> getFruitByID(@PathVariable int id) throws Exception {
         return ResponseEntity.ok(fruitService.getFruitById(id));
     }
     @GetMapping()

@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface FruitService {
 	PaginationDTO getAllFruit(int no, int limit);
-	FruitShowDTO getFruitById(int id);
+	FruitShowDTO getFruitById(int id) throws Exception;
 	FruitDTO readJson(String fruit, List<MultipartFile> image);
 	FruitShowDTO createFruit(FruitDTO fruitDTO);
 	PaginationDTO searchFruit(String name, int no, int limit);
