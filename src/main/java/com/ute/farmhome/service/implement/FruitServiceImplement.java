@@ -214,7 +214,8 @@ public class FruitServiceImplement implements FruitService {
 		Element element = doc.select("tr:has(td:containsOwn("+filterFruitName(fruitName)+"))").first();
 		if (element != null) {
 			Element price = element.select("td:containsOwn(00)").first();
-			return price.text();
+			if (price!=null)
+				return price.text();
 		}
 
 		return "no data";
