@@ -195,7 +195,7 @@ public class FruitServiceImplement implements FruitService {
 
 	@Override
 	public String crawlData(String fruitName) throws Exception {
-		URL url = new URL("https://nongsandungha.com/bang-gia-san-pham-hoa-qua.html");
+		URL url = new URL("https://baokinhte.net/gia-ca-thi-truong/gia-nong-san/");
 
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
@@ -213,7 +213,7 @@ public class FruitServiceImplement implements FruitService {
 
 		Element element = doc.select("tr:has(td:containsOwn("+filterFruitName(fruitName)+"))").first();
 		if (element != null) {
-			Element price = element.select("td:containsOwn(0)").first();
+			Element price = element.select("td:containsOwn(00)").first();
 			return price.text();
 		}
 
