@@ -182,16 +182,25 @@ public class OrderServiceImplement implements OrderService {
     }
 
     @Override
-    public void deleteOrder(int id) {
+    public void deleteOrder(int id, String reason) {
         OrderDTO orderDTO = getById(id);
         Fruit fruit = fruitService.findFruitById(orderDTO.getFruit().getId());
         userLoginService.findByUserId(orderDTO.getMerchant().getId()).ifPresent(userLogin -> {
             try {
-                NotificationNote notificationNote = new NotificationNote("Your order has been declined",
-                        "Order with the product name '" + fruit.getName() + "' has been declined!",
-                        null,
-                        "home",
-                        0);
+                NotificationNote notificationNote;
+                if (reason != null) {
+                    notificationNote = new NotificationNote("Your order has been declined",
+                            "Order with the product name '" + fruit.getName() + "' has been declined with the reason: '" + reason + "'",
+                            null,
+                            "home",
+                            0);
+                } else {
+                    notificationNote = new NotificationNote("Your order has been declined",
+                            "Order with the product name '" + fruit.getName() + "' has been declined!",
+                            null,
+                            "home",
+                            0);
+                }
                 messagingService.sendNotification(notificationNote, userLogin.getDeviceId());
                 orderRepository.deleteById(id);
             } catch (Exception e) {

@@ -15,6 +15,6 @@ public interface OrderService {
     OrderDTO resendOrder(OrderDTO orderDTO);
     HistoryDTO acceptOrder(int id);
     OrderDTO getById(int id);
-    void deleteOrder(int id);
+    void deleteOrder(int id, String reason);
     List<Order> getByFruitId(int id);
 }

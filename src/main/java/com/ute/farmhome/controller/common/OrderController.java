@@ -49,11 +49,12 @@ public class OrderController {
         return new ResponseEntity<>(orderService.acceptOrder(id), HttpStatus.CREATED);
     }
     @DeleteMapping("/cancel/{id}")
-    public ResponseEntity<?> cancelOrder(@PathVariable int id) {
+    public ResponseEntity<?> cancelOrder(@PathVariable int id, @RequestParam(required = false) HashMap<String, String> hashMap) {
+        String reason = hashMap.getOrDefault("reason", null);
         HashMap<String, String> response = new HashMap<>();
         response.put("message", "Deleted order");
         response.put("http code", "200");
-        orderService.deleteOrder(id);
+        orderService.deleteOrder(id, reason);
         return ResponseEntity.ok(response);
     }
 }
