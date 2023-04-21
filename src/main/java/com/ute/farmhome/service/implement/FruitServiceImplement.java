@@ -3,10 +3,7 @@ package com.ute.farmhome.service.implement;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ute.farmhome.dto.FileUpload;
-import com.ute.farmhome.dto.FruitDTO;
-import com.ute.farmhome.dto.FruitShowDTO;
-import com.ute.farmhome.dto.PaginationDTO;
+import com.ute.farmhome.dto.*;
 import com.ute.farmhome.entity.Fruit;
 import com.ute.farmhome.entity.FruitImage;
 import com.ute.farmhome.exception.ResourceNotFound;
@@ -64,6 +61,21 @@ public class FruitServiceImplement implements FruitService {
 		Page<Fruit> page = fruitRepository.findAllFruit(pageRequest);
 		return new PaginationDTO(fruits, page.isFirst(), page.isLast(), page.getTotalPages(), page.getTotalElements(), page.getSize(), page.getNumber());
 	}
+
+	@Override
+	public List<TableFruitDTO> getAllFruitByTable(int no, int limit) {
+		PageRequest pageRequest = PageRequest.of(no, limit);
+		List<TableFruitDTO> listFruit = new ArrayList<>();
+		fruitRepository.findAllFruit(pageRequest).getContent().forEach(fruit -> {
+			try {
+				listFruit.add(new TableFruitDTO(fruit.getName(), crawlData(fruit.getName())));
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			};
+		});
+		return listFruit;
+	}
+
 	@Override
 	public FruitShowDTO getFruitById(int id) throws Exception {
 		return addSuggestPrice(fruitMapper.mapToShow(fruitRepository.findById(id).get()));
@@ -230,8 +242,10 @@ public class FruitServiceImplement implements FruitService {
 		//modifiedString = modifiedString.replaceAll("\\s", ""); 							//remove all whitespace
 
 		String[] words = removedString.split("\\s+"); //split words by space
-
-		return words[0]; //return first word
+		if (words.length > 1) {
+			return words[0] + " " + words[1]; //return first word and second word
+		}
+		return words[0];
 	}
 
 	private FruitShowDTO addSuggestPrice(FruitShowDTO fruitShowDTO) throws Exception {

@@ -24,6 +24,12 @@ public class FruitController {
         int limit = Integer.parseInt(params.getOrDefault("limit", "5"));
         return ResponseEntity.ok(fruitService.getAllFruit(no, limit));
     }
+    @GetMapping("/table")
+    public ResponseEntity<?> getAllFruitByTable(@RequestParam(required = false) Map<String, String> params) {
+        int no = Integer.parseInt(params.getOrDefault("no", "0"));
+        int limit = Integer.parseInt(params.getOrDefault("limit", "5"));
+        return ResponseEntity.ok(fruitService.getAllFruitByTable(no, limit));
+    }
     @GetMapping("/search")
     public ResponseEntity<?> searchFruit(@RequestParam String name, @RequestParam(required = false) HashMap<String, String> hashMap) {
         int no = Integer.parseInt(hashMap.getOrDefault("no", "0"));
