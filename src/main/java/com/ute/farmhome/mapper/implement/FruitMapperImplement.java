@@ -6,6 +6,7 @@ import com.ute.farmhome.entity.Fruit;
 import com.ute.farmhome.exception.ResourceNotFound;
 import com.ute.farmhome.mapper.FruitMapper;
 import com.ute.farmhome.mapper.UserMapper;
+import com.ute.farmhome.repository.CategoryRepository;
 import com.ute.farmhome.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,8 @@ public class FruitMapperImplement implements FruitMapper {
     private UserRepository userRepository;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private CategoryRepository categoryRepository;
     @Override
     public Fruit map(FruitDTO dto) {
         Fruit fruit = new Fruit();
@@ -33,6 +36,11 @@ public class FruitMapperImplement implements FruitMapper {
                 .orElseThrow(() -> new ResourceNotFound("User", "id", String.valueOf(dto.getFarmer().getId()))));
         fruit.setSeason(dto.getSeason());
         fruit.setPopular(dto.getPopular());
+        //default value if request does not put category is 1 - "trái cây"
+        fruit.setCategory(dto.getCategory() != null
+                ? categoryRepository.findByCategory(dto.getCategory())
+                : categoryRepository.findById(1)
+                    .orElseThrow(() -> new ResourceNotFound("category", "id", String.valueOf(1))));
         return fruit;
     }
 
@@ -50,6 +58,7 @@ public class FruitMapperImplement implements FruitMapper {
         dto.setFarmer(userMapper.mapToShow(fruit.getFarmer()));
         dto.setSeason(fruit.getSeason());
         dto.setPopular(fruit.getPopular());
+        dto.setCategory(fruit.getCategory().getCategory());
         return dto;
     }
 
@@ -67,6 +76,7 @@ public class FruitMapperImplement implements FruitMapper {
         dto.setDescription(fruit.getDescription());
         dto.setSeason(fruit.getSeason());
         dto.setPopular(fruit.getPopular());
+        dto.setCategory(fruit.getCategory().getCategory());
         return dto;
     }
 }

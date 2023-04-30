@@ -1,5 +1,6 @@
 package com.ute.farmhome.dto;
 
+import com.ute.farmhome.entity.Category;
 import com.ute.farmhome.entity.FruitImage;
 import com.ute.farmhome.entity.User;
 import lombok.AllArgsConstructor;
@@ -27,4 +28,5 @@ public class FruitShowDTO {
     Boolean popular;
     String season;
     String suggestPrice;
+    String category;
 }

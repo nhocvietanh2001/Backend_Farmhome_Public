@@ -34,4 +34,7 @@ public class Fruit {
 	User farmer;
 	Boolean popular;
 	String season;
+	@OneToOne
+	@JoinColumn(name = "categoryid")
+	Category category;
 }

@@ -8,6 +8,7 @@ import com.ute.farmhome.entity.Fruit;
 import com.ute.farmhome.entity.FruitImage;
 import com.ute.farmhome.exception.ResourceNotFound;
 import com.ute.farmhome.mapper.FruitMapper;
+import com.ute.farmhome.repository.CategoryRepository;
 import com.ute.farmhome.repository.FruitImageRepository;
 import com.ute.farmhome.repository.FruitRepository;
 import com.ute.farmhome.repository.UserRepository;
@@ -44,6 +45,8 @@ public class FruitServiceImplement implements FruitService {
 	private FruitImageRepository fruitImageRepository;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private CategoryRepository categoryRepository;
 	@Autowired
 	private UpdateFile updateFile;
 	@Autowired
@@ -144,6 +147,10 @@ public class FruitServiceImplement implements FruitService {
 		fruit.setSeason(fruitDTO.getSeason());
 		fruit.setPopular(fruitDTO.getPopular());
 		fruit.setDescription(fruitDTO.getDescription());
+		fruit.setCategory(fruitDTO.getCategory() != null
+				? categoryRepository.findByCategory(fruitDTO.getCategory())
+				: categoryRepository.findById(1)
+				.orElseThrow(() -> new ResourceNotFound("category", "id", String.valueOf(1))));
 		if (fruitDTO.getImageFiles().stream().count() > 0) {
 			List<FruitImage> fruitImages = new ArrayList<>();
 			for (MultipartFile imageFile : fruitDTO.getImageFiles()) {
@@ -189,6 +196,14 @@ public class FruitServiceImplement implements FruitService {
 	public Fruit findFruitById(int id) {
 		return fruitRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFound("Fruit", "id", String.valueOf(id)));
+	}
+
+	@Override
+	public PaginationDTO getFruitByCategory(String category, int no, int limit) {
+		Pageable pageable = PageRequest.of(no, limit);
+		List<?> listFruit = fruitRepository.getFruitByCategory(category, pageable).stream().map(item -> fruitMapper.mapToShow(item)).toList();
+		Page<Fruit> page = fruitRepository.getFruitByCategory(category, pageable);
+		return new PaginationDTO(listFruit, page.isFirst(), page.isLast(), page.getTotalPages(), page.getTotalElements(), page.getSize(), page.getNumber());
 	}
 
 	@Override

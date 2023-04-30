@@ -20,4 +20,6 @@ public interface FruitRepository extends CrudRepository<Fruit, Integer>, Filteri
 	Page<Fruit> searchByName(String name, Pageable pageable);
 	@Query("SELECT f FROM Fruit f WHERE f.farmer.id = :id")
 	Page<Fruit> getFruitByUserId(@Param("id") int id, Pageable pageable);
+	@Query("SELECT f FROM Fruit f WHERE f.category.category = :category")
+	Page<Fruit> getFruitByCategory(String category, Pageable pageable);
 }

@@ -22,6 +22,7 @@ public interface FruitService {
 	PaginationDTO getFruitByUserId(int id, int no, int limit);
 	PaginationDTO filterPaging(String name, Float amount, List<String> seasonList, Boolean popular, String order, int no, int limit);
 	Fruit findFruitById(int id);
+	PaginationDTO getFruitByCategory(String category, int no, int limit);
 	void deleteById(int id);
 	void save(Fruit fruit);
 	String crawlData(String fruitName) throws Exception;

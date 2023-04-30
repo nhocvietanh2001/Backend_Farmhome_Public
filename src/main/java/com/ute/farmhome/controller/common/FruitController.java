@@ -37,6 +37,12 @@ public class FruitController {
 
         return ResponseEntity.ok(fruitService.searchFruit(name, no, limit));
     }
+    @GetMapping("/category/{category}")
+    public ResponseEntity<?> getFruitByCategory(@PathVariable String category, @RequestParam(required = false) HashMap<String, String> hashMap) {
+        int no = Integer.parseInt(hashMap.getOrDefault("no", "0"));
+        int limit = Integer.parseInt(hashMap.getOrDefault("limit", "20"));
+        return ResponseEntity.ok(fruitService.getFruitByCategory(category, no, limit));
+    }
     @GetMapping("/farmer/{id}")
     public ResponseEntity<?> getFruitByUserId(@PathVariable int id, @RequestParam(required = false) HashMap<String, String> hashMap) {
         int no = Integer.parseInt(hashMap.getOrDefault("no", "0"));
