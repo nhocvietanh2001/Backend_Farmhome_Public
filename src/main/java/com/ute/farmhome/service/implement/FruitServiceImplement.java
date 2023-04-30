@@ -143,6 +143,7 @@ public class FruitServiceImplement implements FruitService {
 		fruit.setDate(LocalDate.parse(fruitDTO.getDate()));
 		fruit.setSeason(fruitDTO.getSeason());
 		fruit.setPopular(fruitDTO.getPopular());
+		fruit.setDescription(fruitDTO.getDescription());
 		if (fruitDTO.getImageFiles().stream().count() > 0) {
 			List<FruitImage> fruitImages = new ArrayList<>();
 			for (MultipartFile imageFile : fruitDTO.getImageFiles()) {

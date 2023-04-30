@@ -11,6 +11,7 @@ import com.ute.farmhome.mapper.LocationMapper;
 import com.ute.farmhome.mapper.OrderMapper;
 import com.ute.farmhome.repository.OrderRepository;
 import com.ute.farmhome.service.*;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -92,15 +93,16 @@ public class OrderServiceImplement implements OrderService {
         order.setDealAmount(orderDTO.getDealAmount());
         StatusProduct statusDealing = statusService.getDealingStatusProduct();
         order.setStatus(statusDealing);
+        //save notification history
+        NotificationNote notificationNote = new NotificationNote("Your order has changed price",
+                "Order with the product name '" + fruit.getName() + "' has changed price!",
+                fruit.getImages().get(0).getUrl(),
+                "order",
+                order.getId());
+        notificationHistoryService.save(notificationNote, order.getMerchant());
         //notify user the price changed
         userLoginService.findByUserId(order.getMerchant().getId()).ifPresent(userLogin -> {
             try {
-                NotificationNote notificationNote = new NotificationNote("Your order has changed price",
-                        "Order with the product name '" + fruit.getName() + "' has changed price!",
-                        fruit.getImages().get(0).getUrl(),
-                        "order",
-                        order.getId());
-                notificationHistoryService.save(notificationNote, userLogin.getUser());
                 messagingService.sendNotification(notificationNote,
                         userLogin.getDeviceId());
             } catch (Exception e) {
@@ -147,15 +149,16 @@ public class OrderServiceImplement implements OrderService {
         if (historyDTOSaved != null) {
             orderRepository.deleteById(order.getId());
         }
+        //save notification history
+        NotificationNote notificationNote = new NotificationNote("Your order has been accepted",
+                "Order with the product name '" + fruit.getName() + "' has been accepted!",
+                fruit.getImages().get(0).getUrl(),
+                "order",
+                order.getId());
+        notificationHistoryService.save(notificationNote, order.getMerchant());
         //notify user order has been accepted if user login with phone and have notification registration token
         userLoginService.findByUserId(order.getMerchant().getId()).ifPresent(userLogin -> {
             try {
-                NotificationNote notificationNote = new NotificationNote("Your order has been accepted",
-                        "Order with the product name '" + fruit.getName() + "' has been accepted!",
-                        fruit.getImages().get(0).getUrl(),
-                        "order",
-                        order.getId());
-                notificationHistoryService.save(notificationNote, userLogin.getUser());
                 messagingService.sendNotification(notificationNote,
                         userLogin.getDeviceId());
             } catch (Exception e) {
@@ -175,38 +178,44 @@ public class OrderServiceImplement implements OrderService {
         fruitService.save(fruit);
     }
     @Override
-    public OrderDTO getById(int id) {
+    public OrderDTO getOrderDtoById(int id) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("Order", "id", String.valueOf(id)));
         return orderMapper.map(order);
     }
-
     @Override
     public void deleteOrder(int id, String reason) {
-        OrderDTO orderDTO = getById(id);
-        Fruit fruit = fruitService.findFruitById(orderDTO.getFruit().getId());
-        userLoginService.findByUserId(orderDTO.getMerchant().getId()).ifPresent(userLogin -> {
+        Order order = getById(id);
+        Fruit fruit = fruitService.findFruitById(order.getFruit().getId());
+        NotificationNote notificationNote;
+        if (reason != null) {
+            notificationNote = new NotificationNote("Your order has been declined",
+                    "Order with the product name '" + fruit.getName() + "' has been declined with the reason: '" + reason + "'",
+                    null,
+                    "home",
+                    0);
+            notificationHistoryService.save(notificationNote, order.getMerchant());
+        } else {
+            notificationNote = new NotificationNote("Your order has been declined",
+                    "Order with the product name '" + fruit.getName() + "' has been declined!",
+                    null,
+                    "home",
+                    0);
+            notificationHistoryService.save(notificationNote, order.getMerchant());
+        }
+        userLoginService.findByUserId(order.getMerchant().getId()).ifPresent(userLogin -> {
             try {
-                NotificationNote notificationNote;
-                if (reason != null) {
-                    notificationNote = new NotificationNote("Your order has been declined",
-                            "Order with the product name '" + fruit.getName() + "' has been declined with the reason: '" + reason + "'",
-                            null,
-                            "home",
-                            0);
-                } else {
-                    notificationNote = new NotificationNote("Your order has been declined",
-                            "Order with the product name '" + fruit.getName() + "' has been declined!",
-                            null,
-                            "home",
-                            0);
-                }
                 messagingService.sendNotification(notificationNote, userLogin.getDeviceId());
-                orderRepository.deleteById(id);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
+        orderRepository.deleteById(id);
+    }
+
+    private Order getById(int id) {
+        return orderRepository.findById(id).
+                orElseThrow(() -> new ResourceNotFound("Order", "id", String.valueOf(id)));
     }
 
     @Override

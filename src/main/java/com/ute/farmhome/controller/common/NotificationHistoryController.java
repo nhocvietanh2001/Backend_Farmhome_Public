@@ -3,10 +3,8 @@ package com.ute.farmhome.controller.common;
 import com.ute.farmhome.service.NotificationHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.parameters.P;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/notificationHistory")
@@ -20,5 +18,9 @@ public class NotificationHistoryController {
     @GetMapping("/user/{uid}")
     public ResponseEntity<?> getAllNotificationHistory(@PathVariable int uid) {
         return ResponseEntity.ok(notificationHistoryService.getByUserId(uid));
+    }
+    @PutMapping("is-read/{id}")
+    public ResponseEntity<?> updateIsRead(@PathVariable int id) {
+        return ResponseEntity.ok(notificationHistoryService.updateIsRead(id));
     }
 }

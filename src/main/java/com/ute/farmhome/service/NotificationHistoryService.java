@@ -10,4 +10,5 @@ public interface NotificationHistoryService {
     NotificationHistory save(NotificationNote notificationNote, User user);
     NotificationHistory getById(int id);
     List<NotificationHistory> getByUserId(int id);
+    NotificationHistory updateIsRead(int id);
 }

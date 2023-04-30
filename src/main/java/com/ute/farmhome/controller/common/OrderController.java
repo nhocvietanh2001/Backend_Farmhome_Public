@@ -20,7 +20,7 @@ public class OrderController {
     }
     @GetMapping("/{id}")
     public ResponseEntity<OrderDTO> getById(@PathVariable int id) {
-        return ResponseEntity.ok(orderService.getById(id));
+        return ResponseEntity.ok(orderService.getOrderDtoById(id));
     }
     @GetMapping("/merchant/{id}")
     public ResponseEntity<?> getByMerchant(@PathVariable int id, @RequestParam(required = false) HashMap<String, String> hashMap) {
