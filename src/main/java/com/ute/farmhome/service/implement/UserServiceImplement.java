@@ -203,6 +203,23 @@ public class UserServiceImplement implements UserService, UserDetailsService {
         }
         return false;
     }
+
+    @Override
+    public PaginationDTO getAllMerchant(int no, int limit) {
+        Pageable pageable = PageRequest.of(no, limit);
+        List<UserShowDTO> userList = userRepository.getAllMerchant(pageable).stream().map(item -> userMapper.mapToShow(item)).toList();
+        Page<User> page = userRepository.getAllMerchant(pageable);
+        return new PaginationDTO(userList, page.isFirst(), page.isLast(), page.getTotalPages(), page.getTotalElements(), page.getSize(), page.getNumber());
+    }
+
+    @Override
+    public PaginationDTO getAllFarmer(int no, int limit) {
+        Pageable pageable = PageRequest.of(no, limit);
+        List<UserShowDTO> userList = userRepository.getAllFarmer(pageable).stream().map(item -> userMapper.mapToShow(item)).toList();
+        Page<User> page = userRepository.getAllFarmer(pageable);
+        return new PaginationDTO(userList, page.isFirst(), page.isLast(), page.getTotalPages(), page.getTotalElements(), page.getSize(), page.getNumber());
+    }
+
     private Boolean validateChangePassword(UserChangePassDTO userChangePassDTO, String password) {
         HashMap<String, String> mapError = new HashMap<>();
         if (!userChangePassDTO.getNewPassword().equals(userChangePassDTO.getConfirmNewPassword())) {

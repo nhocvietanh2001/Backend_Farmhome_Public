@@ -16,7 +16,7 @@ public interface HistoryRepository extends CrudRepository<History, Integer> {
     Page<History> findByFarmerOrMerchantId(int id, Pageable pageable);
     @Query("SELECT h.fruit.name as name, sum(h.price * h.amount) as total FROM History h WHERE h.date >= :startDate and h.date <= :endDate GROUP BY h.fruit")
     List<Object[]> statisticFruitByDate(LocalDate startDate, LocalDate endDate);
-    @Query("SELECT h.date as date, sum(h.price * h.amount) as total FROM History h WHERE h.date >= :startDate and h.date <= :endDate GROUP BY h.date")
+    @Query("SELECT h.date as date, sum(h.price * h.amount) as total FROM History h WHERE h.date >= :startDate and h.date <= :endDate GROUP BY h.date ORDER BY h.date")
     List<Object[]> statisticByDate(LocalDate startDate, LocalDate endDate);
 
 }

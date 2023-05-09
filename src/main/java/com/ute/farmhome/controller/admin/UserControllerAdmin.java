@@ -80,4 +80,18 @@ public class UserControllerAdmin {
         hashMap.put("message", "Failed");
         return ResponseEntity.ok(hashMap);
     }
+
+    @GetMapping(value = "getAllMerchant")
+    public ResponseEntity<?> getAllMerchant(@RequestParam HashMap<String, String> hashMap) {
+        int no = Integer.parseInt(hashMap.getOrDefault("no", "0"));
+        int limit = Integer.parseInt(hashMap.getOrDefault("limit", "20"));
+        return ResponseEntity.ok(userService.getAllMerchant(no, limit));
+    }
+
+    @GetMapping(value = "getAllFarmer")
+    public ResponseEntity<?> getAllFarmer(@RequestParam HashMap<String, String> hashMap) {
+        int no = Integer.parseInt(hashMap.getOrDefault("no", "0"));
+        int limit = Integer.parseInt(hashMap.getOrDefault("limit", "20"));
+        return ResponseEntity.ok(userService.getAllFarmer(no, limit));
+    }
 }

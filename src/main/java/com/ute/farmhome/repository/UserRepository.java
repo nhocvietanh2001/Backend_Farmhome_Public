@@ -20,4 +20,8 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     boolean existByUsername(String username);
     boolean existsByEmail(String email);
     boolean existsByPhone(String phone);
+    @Query("SELECT u FROM User u JOIN u.roles r WHERE r.name = 'MERCHANT'")
+    Page<User> getAllMerchant(Pageable pageable);
+    @Query("SELECT u FROM User u JOIN u.roles r WHERE r.name = 'FARMER'")
+    Page<User> getAllFarmer(Pageable pageable);
 }

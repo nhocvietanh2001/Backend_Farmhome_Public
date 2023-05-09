@@ -19,4 +19,6 @@ public interface UserService {
     UserShowDTO getById(int id);
     User findById(int id);
     Boolean changePassword(String username, UserChangePassDTO userChangePassDTO);
+    PaginationDTO getAllMerchant(int no, int limit);
+    PaginationDTO getAllFarmer(int no, int limit);
 }
