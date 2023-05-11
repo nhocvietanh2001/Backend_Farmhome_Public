@@ -96,15 +96,17 @@ public class UserControllerAdmin {
         return ResponseEntity.ok(userService.getAllFarmer(no, limit));
     }
 
-    @GetMapping(value = "searchMerchant/{username}")
-    public ResponseEntity<?> searchMerchant(@PathVariable String username, @RequestParam HashMap<String, String> hashMap) {
+    @GetMapping(value = "searchMerchant")
+    public ResponseEntity<?> searchMerchant(@RequestParam HashMap<String, String> hashMap) {
+        String username = hashMap.getOrDefault("username", "");
         int no = Integer.parseInt(hashMap.getOrDefault("no", "0"));
         int limit = Integer.parseInt(hashMap.getOrDefault("limit", "20"));
         return ResponseEntity.ok(userService.searchMerchant(no, limit, username));
     }
 
-    @GetMapping(value = "searchFarmer/{username}")
-    public ResponseEntity<?> searchFarmer(@PathVariable String username, @RequestParam HashMap<String, String> hashMap) {
+    @GetMapping(value = "searchFarmer")
+    public ResponseEntity<?> searchFarmer(@RequestParam HashMap<String, String> hashMap) {
+        String username = hashMap.getOrDefault("username", "");
         int no = Integer.parseInt(hashMap.getOrDefault("no", "0"));
         int limit = Integer.parseInt(hashMap.getOrDefault("limit", "20"));
         return ResponseEntity.ok(userService.searchFarmer(no, limit, username));
