@@ -24,4 +24,8 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     Page<User> getAllMerchant(Pageable pageable);
     @Query("SELECT u FROM User u JOIN u.roles r WHERE r.name = 'FARMER'")
     Page<User> getAllFarmer(Pageable pageable);
+    @Query("SELECT u FROM User u JOIN u.roles r WHERE u.username LIKE %:username% AND r.name = 'MERCHANT'")
+    Page<User> searchMerchantContaining(String username, Pageable pageable);
+    @Query("SELECT u FROM User u JOIN u.roles r WHERE u.username LIKE %:username% AND r.name = 'FARMER'")
+    Page<User> searchFarmerContaining(String username, Pageable pageable);
 }

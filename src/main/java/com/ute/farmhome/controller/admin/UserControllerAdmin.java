@@ -24,6 +24,7 @@ import java.util.HashMap;
 
 @RestController
 @RequestMapping("/admin/user")
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserControllerAdmin {
     @Autowired
     private UserService userService;
@@ -93,5 +94,19 @@ public class UserControllerAdmin {
         int no = Integer.parseInt(hashMap.getOrDefault("no", "0"));
         int limit = Integer.parseInt(hashMap.getOrDefault("limit", "20"));
         return ResponseEntity.ok(userService.getAllFarmer(no, limit));
+    }
+
+    @GetMapping(value = "searchMerchant/{username}")
+    public ResponseEntity<?> searchMerchant(@PathVariable String username, @RequestParam HashMap<String, String> hashMap) {
+        int no = Integer.parseInt(hashMap.getOrDefault("no", "0"));
+        int limit = Integer.parseInt(hashMap.getOrDefault("limit", "20"));
+        return ResponseEntity.ok(userService.searchMerchant(no, limit, username));
+    }
+
+    @GetMapping(value = "searchFarmer/{username}")
+    public ResponseEntity<?> searchFarmer(@PathVariable String username, @RequestParam HashMap<String, String> hashMap) {
+        int no = Integer.parseInt(hashMap.getOrDefault("no", "0"));
+        int limit = Integer.parseInt(hashMap.getOrDefault("limit", "20"));
+        return ResponseEntity.ok(userService.searchFarmer(no, limit, username));
     }
 }

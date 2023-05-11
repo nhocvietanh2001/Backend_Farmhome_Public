@@ -21,4 +21,6 @@ public interface UserService {
     Boolean changePassword(String username, UserChangePassDTO userChangePassDTO);
     PaginationDTO getAllMerchant(int no, int limit);
     PaginationDTO getAllFarmer(int no, int limit);
+    PaginationDTO searchMerchant(int no, int limit, String username);
+    PaginationDTO searchFarmer(int no, int limit, String username);
 }

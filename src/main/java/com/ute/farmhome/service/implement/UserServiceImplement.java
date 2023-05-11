@@ -62,6 +62,7 @@ public class UserServiceImplement implements UserService, UserDetailsService {
     @Autowired
     private LocationMapper locationMapper;
     public final static Logger log = LoggerFactory.getLogger("info");
+
     @Override
     public UserDetails loadUserByUsername(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username not found in the database"));
@@ -72,13 +73,14 @@ public class UserServiceImplement implements UserService, UserDetailsService {
         });
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
+
     @Override
     public UserCreateDTO readJson(String user, MultipartFile avatar) {
         UserCreateDTO userCreateDTO = new UserCreateDTO();
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             userCreateDTO = objectMapper.readValue(user, UserCreateDTO.class);
-            if(avatar != null) {
+            if (avatar != null) {
                 userCreateDTO.setAvatarFile(avatar);
             }
         } catch (JsonMappingException e) {
@@ -89,6 +91,7 @@ public class UserServiceImplement implements UserService, UserDetailsService {
 
         return userCreateDTO;
     }
+
     @Override
     public UserShowDTO createUser(UserCreateDTO userCreateDTO) {
         if (!validateData(userCreateDTO)) {
@@ -139,6 +142,7 @@ public class UserServiceImplement implements UserService, UserDetailsService {
         }
         return true;
     }
+
     @Override
     public PaginationDTO getAllUserPaging(int no, int number) {
         Pageable pageable = PageRequest.of(no, number);
@@ -196,7 +200,7 @@ public class UserServiceImplement implements UserService, UserDetailsService {
     public Boolean changePassword(String username, UserChangePassDTO userChangePassDTO) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFound("User", "username", username));
-        if(validateChangePassword(userChangePassDTO, user.getPassword())) {
+        if (validateChangePassword(userChangePassDTO, user.getPassword())) {
             user.setPassword(passwordEncoder.encode(userChangePassDTO.getNewPassword()));
             userRepository.save(user);
             return true;
@@ -220,6 +224,22 @@ public class UserServiceImplement implements UserService, UserDetailsService {
         return new PaginationDTO(userList, page.isFirst(), page.isLast(), page.getTotalPages(), page.getTotalElements(), page.getSize(), page.getNumber());
     }
 
+    @Override
+    public PaginationDTO searchMerchant(int no, int limit, String username) {
+        Pageable pageable = PageRequest.of(no, limit);
+        List<UserShowDTO> userList = userRepository.searchMerchantContaining(username, pageable).stream().map(item -> userMapper.mapToShow(item)).toList();
+        Page<User> page = userRepository.searchMerchantContaining(username, pageable);
+        return new PaginationDTO(userList, page.isFirst(), page.isLast(), page.getTotalPages(), page.getTotalElements(), page.getSize(), page.getNumber());
+    }
+
+    @Override
+    public PaginationDTO searchFarmer(int no, int limit, String username) {
+        Pageable pageable = PageRequest.of(no, limit);
+        List<UserShowDTO> userList = userRepository.searchFarmerContaining(username, pageable).stream().map(item -> userMapper.mapToShow(item)).toList();
+        Page<User> page = userRepository.searchFarmerContaining(username, pageable);
+        return new PaginationDTO(userList, page.isFirst(), page.isLast(), page.getTotalPages(), page.getTotalElements(), page.getSize(), page.getNumber());
+    }
+
     private Boolean validateChangePassword(UserChangePassDTO userChangePassDTO, String password) {
         HashMap<String, String> mapError = new HashMap<>();
         if (!userChangePassDTO.getNewPassword().equals(userChangePassDTO.getConfirmNewPassword())) {
@@ -236,6 +256,7 @@ public class UserServiceImplement implements UserService, UserDetailsService {
         }
         return true;
     }
+
     private Boolean validateUpdateData(User user, UserCreateDTO userCreateDTO) {
         HashMap<String, String> mapError = new HashMap<>();
         if (!userCreateDTO.getEmail().equals(user.getEmail())) {
