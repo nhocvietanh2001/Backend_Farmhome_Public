@@ -111,4 +111,12 @@ public class UserControllerAdmin {
         int limit = Integer.parseInt(hashMap.getOrDefault("limit", "20"));
         return ResponseEntity.ok(userService.searchFarmer(no, limit, username));
     }
+
+    @GetMapping(value = "getMerchantDetail/{id}")
+    public  ResponseEntity<?> getMerchantDetail(@PathVariable int id, @RequestParam HashMap<String, String> hashMap) {
+        int no = Integer.parseInt(hashMap.getOrDefault("no", "0"));
+        int limit = Integer.parseInt(hashMap.getOrDefault("limit", "20"));
+
+        return ResponseEntity.ok(userService.getMerchantDetail(id, no, limit));
+    }
 }

@@ -43,4 +43,10 @@ public class HistoryServiceImplement implements HistoryService {
                 .orElseThrow(() -> new ResourceNotFound("History", "id", String.valueOf(id))));
     }
 
+    @Override
+    public List<HistoryDTO> getListByUserId(int id, int no, int limit) {
+        Pageable pageable = PageRequest.of(no, limit);
+        return historyRepository.findByFarmerOrMerchantId(id, pageable).stream().map(item -> historyMapper.map(item)).toList();
+    }
+
 }

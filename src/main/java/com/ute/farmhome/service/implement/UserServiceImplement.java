@@ -15,7 +15,9 @@ import com.ute.farmhome.mapper.UserMapper;
 import com.ute.farmhome.repository.RoleRepository;
 import com.ute.farmhome.repository.StatusUserRepository;
 import com.ute.farmhome.repository.UserRepository;
+import com.ute.farmhome.service.HistoryService;
 import com.ute.farmhome.service.LocationService;
+import com.ute.farmhome.service.OrderService;
 import com.ute.farmhome.service.UserService;
 import com.ute.farmhome.utility.UpdateFile;
 import com.ute.farmhome.utility.Validation;
@@ -46,9 +48,11 @@ public class UserServiceImplement implements UserService, UserDetailsService {
     @Autowired
     private LocationService locationService;
     @Autowired
-    private UserRepository userRepository;
+    private HistoryService historyService;
     @Autowired
-    private RoleRepository roleRepository;
+    private OrderService orderService;
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private StatusUserRepository statusUserRepository;
     @Autowired
@@ -238,6 +242,15 @@ public class UserServiceImplement implements UserService, UserDetailsService {
         List<UserShowDTO> userList = userRepository.searchFarmerContaining(username, pageable).stream().map(item -> userMapper.mapToShow(item)).toList();
         Page<User> page = userRepository.searchFarmerContaining(username, pageable);
         return new PaginationDTO(userList, page.isFirst(), page.isLast(), page.getTotalPages(), page.getTotalElements(), page.getSize(), page.getNumber());
+    }
+
+    @Override
+    public MerchantDetailDTO getMerchantDetail(int id, int no, int limit) {
+        MerchantDetailDTO merchantDetailDTO = new MerchantDetailDTO();
+        merchantDetailDTO.setUser(getById(id));
+        merchantDetailDTO.setHistoryList(historyService.getListByUserId(id, no, limit));
+        merchantDetailDTO.setOrderList(orderService.getListByMerchantUserId(id, no, limit));
+        return merchantDetailDTO;
     }
 
     private Boolean validateChangePassword(UserChangePassDTO userChangePassDTO, String password) {

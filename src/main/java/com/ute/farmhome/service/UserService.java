@@ -1,9 +1,6 @@
 package com.ute.farmhome.service;
 
-import com.ute.farmhome.dto.PaginationDTO;
-import com.ute.farmhome.dto.UserChangePassDTO;
-import com.ute.farmhome.dto.UserCreateDTO;
-import com.ute.farmhome.dto.UserShowDTO;
+import com.ute.farmhome.dto.*;
 import com.ute.farmhome.entity.User;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,4 +20,5 @@ public interface UserService {
     PaginationDTO getAllFarmer(int no, int limit);
     PaginationDTO searchMerchant(int no, int limit, String username);
     PaginationDTO searchFarmer(int no, int limit, String username);
+    MerchantDetailDTO getMerchantDetail(int id, int no, int limit);
 }
