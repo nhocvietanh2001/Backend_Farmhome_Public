@@ -17,5 +17,5 @@ public interface OrderService {
     OrderDTO getOrderDtoById(int id);
     void deleteOrder(int id, String reason);
     List<Order> getByFruitId(int id);
-    List<OrderDTO> getListByMerchantUserId(int id, int no, int limit);
+    List<OrderDTO> getListByFarmerOrMerchantUserId(int id, int no, int limit);
 }

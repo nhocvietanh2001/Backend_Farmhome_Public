@@ -224,8 +224,8 @@ public class OrderServiceImplement implements OrderService {
     }
 
     @Override
-    public List<OrderDTO> getListByMerchantUserId(int id, int no, int limit) {
+    public List<OrderDTO> getListByFarmerOrMerchantUserId(int id, int no, int limit) {
         Pageable pageable = PageRequest.of(no, limit);
-        return orderRepository.findByMerchantId(id, pageable).stream().map(item -> orderMapper.map(item)).toList();
+        return orderRepository.findByFarmerOrMerchantId(id, pageable).stream().map(item -> orderMapper.map(item)).toList();
     }
 }

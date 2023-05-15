@@ -15,10 +15,7 @@ import com.ute.farmhome.mapper.UserMapper;
 import com.ute.farmhome.repository.RoleRepository;
 import com.ute.farmhome.repository.StatusUserRepository;
 import com.ute.farmhome.repository.UserRepository;
-import com.ute.farmhome.service.HistoryService;
-import com.ute.farmhome.service.LocationService;
-import com.ute.farmhome.service.OrderService;
-import com.ute.farmhome.service.UserService;
+import com.ute.farmhome.service.*;
 import com.ute.farmhome.utility.UpdateFile;
 import com.ute.farmhome.utility.Validation;
 import org.checkerframework.checker.units.qual.A;
@@ -46,9 +43,11 @@ import java.util.List;
 @Service
 public class UserServiceImplement implements UserService, UserDetailsService {
     @Autowired
-    private LocationService locationService;
+    private FruitService fruitService;
     @Autowired
     private HistoryService historyService;
+    @Autowired
+    private LocationService locationService;
     @Autowired
     private OrderService orderService;
     @Autowired
@@ -249,8 +248,18 @@ public class UserServiceImplement implements UserService, UserDetailsService {
         MerchantDetailDTO merchantDetailDTO = new MerchantDetailDTO();
         merchantDetailDTO.setUser(getById(id));
         merchantDetailDTO.setHistoryList(historyService.getListByUserId(id, no, limit));
-        merchantDetailDTO.setOrderList(orderService.getListByMerchantUserId(id, no, limit));
+        merchantDetailDTO.setOrderList(orderService.getListByFarmerOrMerchantUserId(id, no, limit));
         return merchantDetailDTO;
+    }
+
+    @Override
+    public FarmerDetailDTO getFarmerDetail(int id, int no, int limit) {
+        FarmerDetailDTO farmerDetailDTO = new FarmerDetailDTO();
+        farmerDetailDTO.setUser(getById(id));
+        farmerDetailDTO.setHistoryList(historyService.getListByUserId(id, no, limit));
+        farmerDetailDTO.setOrderList(orderService.getListByFarmerOrMerchantUserId(id, no, limit));
+        farmerDetailDTO.setFruitList(fruitService.getListFruitByUserId(id, no, limit));
+        return farmerDetailDTO;
     }
 
     private Boolean validateChangePassword(UserChangePassDTO userChangePassDTO, String password) {

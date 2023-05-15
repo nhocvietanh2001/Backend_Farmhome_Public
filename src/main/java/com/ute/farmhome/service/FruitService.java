@@ -26,4 +26,5 @@ public interface FruitService {
 	void deleteById(int id);
 	void save(Fruit fruit);
 	String crawlData(String fruitName) throws Exception;
+	List<FruitShowDTO> getListFruitByUserId(int id, int no, int limit);
 }

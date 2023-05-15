@@ -21,4 +21,5 @@ public interface UserService {
     PaginationDTO searchMerchant(int no, int limit, String username);
     PaginationDTO searchFarmer(int no, int limit, String username);
     MerchantDetailDTO getMerchantDetail(int id, int no, int limit);
+    FarmerDetailDTO getFarmerDetail(int id, int no, int limit);
 }

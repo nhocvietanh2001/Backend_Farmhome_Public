@@ -249,6 +249,12 @@ public class FruitServiceImplement implements FruitService {
 		return "no data";
 	}
 
+	@Override
+	public List<FruitShowDTO> getListFruitByUserId(int id, int no, int limit) {
+		Pageable pageable = PageRequest.of(no, limit);
+		return fruitRepository.getFruitByUserId(id, pageable).stream().map(item -> fruitMapper.mapToShow(item)).toList();
+	}
+
 	private String filterFruitName(String fruitName) {
 		String wordToRemove = "trái ";
 		String removedString = fruitName.replaceAll("\\b" + wordToRemove + "\\b", ""); 	//remove "trái "

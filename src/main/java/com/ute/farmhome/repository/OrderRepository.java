@@ -15,6 +15,8 @@ public interface OrderRepository extends CrudRepository<Order, Integer> {
     Page<Order> findByMerchantId(int id, Pageable pageable);
     @Query("SELECT o FROM Order o WHERE o.farmer.id = :id ORDER BY o.id DESC")
     Page<Order> findByFarmerId(int id, Pageable pageable);
+    @Query("SELECT o FROM Order o WHERE o.farmer.id = :id or o.merchant.id = :id ORDER BY o.id DESC")
+    Page<Order> findByFarmerOrMerchantId(int id, Pageable pageable);
     @Query("SELECT o FROM Order o WHERE o.fruit.id = :id")
     List<Order> findByFruitId(int id);
 }
