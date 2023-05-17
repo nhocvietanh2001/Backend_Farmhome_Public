@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -28,4 +29,8 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     Page<User> searchMerchantContaining(String username, Pageable pageable);
     @Query("SELECT u FROM User u JOIN u.roles r WHERE u.username LIKE %:username% AND r.name = 'FARMER'")
     Page<User> searchFarmerContaining(String username, Pageable pageable);
+    @Query("SELECT u.firstName, u.lastName, sum(h.price * h.amount) FROM User u, History h WHERE u.id = h.merchant GROUP BY u.id")
+    List<Object[]> statisticMerchant();
+    @Query("SELECT u.firstName, u.lastName, sum(h.price * h.amount) FROM User u, History h WHERE u.id = h.farmer GROUP BY u.id")
+    List<Object[]> statisticFarmer();
 }

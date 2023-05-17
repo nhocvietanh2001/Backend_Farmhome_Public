@@ -1,18 +1,19 @@
-package com.ute.farmhome.dto;
+package com.ute.farmhome.dto.statistic;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class StatisticFruitDTO {
-    String name;
+public class StatisticDateDTO {
+    LocalDate date;
     float total;
-    float percent;
-    public StatisticFruitDTO(Object[] objects) {
-        this.name = (String) objects[0];
+    public StatisticDateDTO(Object[] objects) {
+        this.date = (LocalDate) objects[0];
         this.total = Float.parseFloat(String.valueOf(objects[1]));
     }
 }

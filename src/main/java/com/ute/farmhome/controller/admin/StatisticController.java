@@ -28,4 +28,19 @@ public class StatisticController {
         LocalDate endDate = LocalDate.parse(hashMap.getOrDefault("endDate", LocalDate.now().toString()));
         return ResponseEntity.ok(statisticService.statisticBarChart(startDate, endDate));
     }
+
+    @GetMapping("merchant")
+    public ResponseEntity<?> statisticMerchant() {
+        return ResponseEntity.ok(statisticService.statisticMerchant());
+    }
+
+    @GetMapping("farmer")
+    public ResponseEntity<?> statisticFarmer() {
+        return ResponseEntity.ok(statisticService.statisticFarmer());
+    }
+
+    @GetMapping("user")
+    public ResponseEntity<?> statisticUser() {
+        return ResponseEntity.ok(statisticService.statisticUser());
+    }
 }

@@ -1,4 +1,4 @@
-package com.ute.farmhome.dto;
+package com.ute.farmhome.dto.statistic;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class StatisticDTO {
-    List<?> data;
+public class StatisticMultipleListDTO {
+    List<?> farmer;
+    List<?> merchant;
     float summary;
 }

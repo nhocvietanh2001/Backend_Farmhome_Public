@@ -55,6 +55,8 @@ public class UserServiceImplement implements UserService, UserDetailsService {
     @Autowired
     private StatusUserRepository statusUserRepository;
     @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
     @Autowired
     private Validation validation;
@@ -173,7 +175,16 @@ public class UserServiceImplement implements UserService, UserDetailsService {
         user.setBirthDay(LocalDate.parse(userCreateDTO.getBirthDay()));
         user.setEmail(userCreateDTO.getEmail());
         user.setPhone(userCreateDTO.getPhone());
-        user.setLocation(locationService.bindUpdateData(userCreateDTO.getLocation()));
+        if(userCreateDTO.getLocation() != null) {
+            user.setLocation(locationService.bindUpdateData(userCreateDTO.getLocation()));
+        }
+        if(userCreateDTO.getRoles().size() > 0) {
+            userCreateDTO.getRoles().forEach(role -> {
+                Role findRole = roleRepository.findById(role.getId())
+                        .orElseThrow(() -> new ResourceNotFound("Role", "id", String.valueOf(role.getId())));
+                user.getRoles().add(findRole);
+            });
+        }
         StatusUser statusUser = statusUserRepository.findById(userCreateDTO.getStatus().getId())
                 .orElseThrow(() -> new ResourceNotFound("StatusUser", "id", String.valueOf(userCreateDTO.getStatus().getId())));
         user.setStatus(statusUser);
