@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -25,7 +26,7 @@ public class NotificationHistoryServiceImplement implements NotificationHistoryS
                 notificationNote.getContent(),
                 notificationNote.getImgUrl(),
                 notificationNote.getType(),
-                LocalDate.now(),
+                LocalDateTime.now(),
                 notificationNote.getId(),
                 false);
         return notificationHistoryRepository.save(history);

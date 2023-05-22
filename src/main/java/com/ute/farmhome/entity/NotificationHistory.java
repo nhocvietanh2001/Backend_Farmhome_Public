@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,7 +23,7 @@ public class NotificationHistory {
     String content;
     String imgUrl;
     String type;
-    LocalDate date;
+    LocalDateTime date;
     int orderId;
     Boolean isRead;
 }
