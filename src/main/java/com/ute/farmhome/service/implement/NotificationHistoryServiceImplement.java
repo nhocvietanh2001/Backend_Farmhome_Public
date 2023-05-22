@@ -34,8 +34,10 @@ public class NotificationHistoryServiceImplement implements NotificationHistoryS
 
     @Override
     public NotificationHistory getById(int id) {
-        return notificationHistoryRepository.findById(id)
+        NotificationHistory notificationHistory = notificationHistoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("NotificationHistory", "id", String.valueOf(id)));
+        notificationHistory.setIsRead(true);
+        return notificationHistoryRepository.save(notificationHistory);
     }
 
     @Override
