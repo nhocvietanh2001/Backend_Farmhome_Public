@@ -63,6 +63,9 @@ public class UserMapperImplement implements UserMapper {
 
     @Override
     public UserShowDTO mapToShow(User user) {
+        if (user == null) {
+            return null;
+        }
         UserShowDTO dto = new UserShowDTO();
         dto.setId(user.getId());
         dto.setUsername(user.getUsername());

@@ -213,7 +213,8 @@ public class FruitServiceImplement implements FruitService {
 		fruit.getImages().forEach(item -> {
 			fruitImageService.deleteImageById(item.getId());
 		});
-		fruitRepository.deleteById(id);
+		fruit.setFarmer(null);
+		fruitRepository.save(fruit);
 	}
 
 	@Override

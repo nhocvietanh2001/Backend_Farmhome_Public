@@ -14,12 +14,12 @@ import com.ute.farmhome.entity.Fruit;
 
 @Repository
 public interface FruitRepository extends CrudRepository<Fruit, Integer>, FilteringRepository {
-	@Query("SELECT f FROM Fruit f")
+	@Query("SELECT f FROM Fruit f WHERE f.farmer IS NOT NULL")
 	Page<Fruit> findAllFruit(PageRequest pageRequest);
-	@Query("SELECT f FROM Fruit f WHERE f.name like %:name%")
+	@Query("SELECT f FROM Fruit f WHERE f.name like %:name% AND f.farmer IS NOT NULL")
 	Page<Fruit> searchByName(String name, Pageable pageable);
 	@Query("SELECT f FROM Fruit f WHERE f.farmer.id = :id")
 	Page<Fruit> getFruitByUserId(@Param("id") int id, Pageable pageable);
-	@Query("SELECT f FROM Fruit f WHERE f.category.category = :category")
+	@Query("SELECT f FROM Fruit f WHERE f.category.category = :category AND f.farmer IS NOT NULL")
 	Page<Fruit> getFruitByCategory(String category, Pageable pageable);
 }
