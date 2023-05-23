@@ -59,4 +59,13 @@ public class StatisticServiceImplement implements StatisticService {
         float summary = (float) statisticFarmerList.stream().mapToDouble(StatisticUserDTO::getTotal).sum();
         return new StatisticMultipleListDTO(statisticFarmerList, statisticMerchantList, summary);
     }
+
+    @Override
+    public StatisticDTO statisticDate(int day) {
+        List<Object[]> data = historyRepository.statisticBackInDay(LocalDate.now().minusDays(day));
+        List<StatisticDateDTO> statisticDateDTOS = data.stream().map(StatisticDateDTO::new).toList();
+        float summary = (float) statisticDateDTOS.stream().mapToDouble(StatisticDateDTO::getTotal).sum();
+        return new StatisticDTO(statisticDateDTOS, summary);
+    }
+
 }

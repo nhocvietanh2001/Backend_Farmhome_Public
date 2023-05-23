@@ -18,5 +18,6 @@ public interface HistoryRepository extends CrudRepository<History, Integer> {
     List<Object[]> statisticFruitByDate(LocalDate startDate, LocalDate endDate);
     @Query("SELECT h.date as date, sum(h.price * h.amount) as total FROM History h WHERE h.date >= :startDate and h.date <= :endDate GROUP BY h.date ORDER BY h.date")
     List<Object[]> statisticByDate(LocalDate startDate, LocalDate endDate);
-
+    @Query("SELECT h.date, sum(h.price * h.amount) FROM History h WHERE h.date > :calculatedDate GROUP BY h.date")
+    List<Object[]> statisticBackInDay(LocalDate calculatedDate);
 }

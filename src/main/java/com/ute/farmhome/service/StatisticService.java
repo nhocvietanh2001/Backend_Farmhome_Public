@@ -11,4 +11,5 @@ public interface StatisticService {
     StatisticDTO statisticMerchant();
     StatisticDTO statisticFarmer();
     StatisticMultipleListDTO statisticUser();
+    StatisticDTO statisticDate(int day);
 }
