@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class StatisticServiceImplement implements StatisticService {
@@ -63,7 +65,22 @@ public class StatisticServiceImplement implements StatisticService {
     @Override
     public StatisticDTO statisticDate(int day) {
         List<Object[]> data = historyRepository.statisticBackInDay(LocalDate.now().minusDays(day));
-        List<StatisticDateDTO> statisticDateDTOS = data.stream().map(StatisticDateDTO::new).toList();
+        List<StatisticDateDTO> statisticDateDTOS = new ArrayList<>(data.stream().map(StatisticDateDTO::new).toList());
+        LocalDate startDate = LocalDate.now().minusDays(day);
+
+        Map<LocalDate, Float> map = new HashMap<>();
+
+        for (StatisticDateDTO statisticDateDTO : statisticDateDTOS) {
+            map.put(statisticDateDTO.getDate(), statisticDateDTO.getTotal());
+        }
+
+        while (!startDate.isAfter(LocalDate.now())) {
+            if (!map.containsKey(startDate)) {
+                statisticDateDTOS.add(new StatisticDateDTO(startDate, 0));
+            }
+            startDate = startDate.plusDays(1);
+        }
+
         float summary = (float) statisticDateDTOS.stream().mapToDouble(StatisticDateDTO::getTotal).sum();
         return new StatisticDTO(statisticDateDTOS, summary);
     }
