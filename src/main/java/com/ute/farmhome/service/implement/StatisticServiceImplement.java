@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class StatisticServiceImplement implements StatisticService {
@@ -80,6 +77,13 @@ public class StatisticServiceImplement implements StatisticService {
             }
             startDate = startDate.plusDays(1);
         }
+
+        statisticDateDTOS.sort(new Comparator<StatisticDateDTO>() {
+            @Override
+            public int compare(StatisticDateDTO o1, StatisticDateDTO o2) {
+                return o1.getDate().compareTo(o2.getDate());
+            }
+        });
 
         float summary = (float) statisticDateDTOS.stream().mapToDouble(StatisticDateDTO::getTotal).sum();
         return new StatisticDTO(statisticDateDTOS, summary);
