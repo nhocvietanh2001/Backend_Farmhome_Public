@@ -33,4 +33,8 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     List<Object[]> statisticMerchant();
     @Query("SELECT u.firstName, u.lastName, sum(h.price * h.amount) FROM User u, History h WHERE u.id = h.farmer GROUP BY u.id")
     List<Object[]> statisticFarmer();
+    @Query("SELECT count(r.id) FROM User u JOIN u.roles r GROUP BY r.id ORDER BY r.id")
+    Object[] getCountUser();
+    @Query("SELECT count(u.username) FROM User u WHERE MONTH(u.createDate) = 5")
+    Long getNewUserThisMonth();
 }

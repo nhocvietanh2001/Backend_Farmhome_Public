@@ -89,4 +89,15 @@ public class StatisticServiceImplement implements StatisticService {
         return new StatisticDTO(statisticDateDTOS, summary);
     }
 
+    @Override
+    public Stats getStats() {
+        Object[] data = userRepository.getCountUser();
+        Stats stat = new Stats();
+        stat.setTotalMerchant((Long) data[0]);
+        stat.setTotalFarmer((Long) data[1]);
+        stat.setTotalUser((Long) data[0] + (Long) data[1]);
+        stat.setNewThisMonth(userRepository.getNewUserThisMonth());
+        return stat;
+    }
+
 }

@@ -45,4 +45,9 @@ public class StatisticController {
     public ResponseEntity<?> statisticDate(@PathVariable int day){
         return ResponseEntity.ok(statisticService.statisticDate(day));
     }
+
+    @GetMapping("stats/")
+    public ResponseEntity<?> getStats() {
+        return ResponseEntity.ok(statisticService.getStats());
+    }
 }

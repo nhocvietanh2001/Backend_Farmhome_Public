@@ -2,6 +2,7 @@ package com.ute.farmhome.service;
 
 import com.ute.farmhome.dto.statistic.StatisticDTO;
 import com.ute.farmhome.dto.statistic.StatisticMultipleListDTO;
+import com.ute.farmhome.dto.statistic.Stats;
 
 import java.time.LocalDate;
 
@@ -12,4 +13,5 @@ public interface StatisticService {
     StatisticDTO statisticFarmer();
     StatisticMultipleListDTO statisticUser();
     StatisticDTO statisticDate(int day);
+    Stats getStats();
 }
