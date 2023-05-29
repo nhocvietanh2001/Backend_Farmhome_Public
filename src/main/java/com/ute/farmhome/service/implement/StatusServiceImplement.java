@@ -23,4 +23,9 @@ public class StatusServiceImplement implements StatusService {
     public StatusProduct getDealingStatusProduct() {
         return statusProductRepository.findById(2).orElseThrow(() -> new ResourceNotFound("Status Product", "id", "2"));
     }
+
+    @Override
+    public StatusProduct getCanceledStatusProduct() {
+        return statusProductRepository.findById(4).orElseThrow(() -> new ResourceNotFound("Status Product", "id", "4"));
+    }
 }

@@ -23,4 +23,5 @@ public class OrderDTO {
     Boolean transport;
     StatusProduct status;
     LocationDTO deliveryLocation;
+    String declineReason;
 }

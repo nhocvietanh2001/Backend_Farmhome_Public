@@ -38,6 +38,7 @@ public class OrderMapperImplement implements OrderMapper {
         orderDTO.setDate(String.valueOf(entity.getDate()));
         orderDTO.setTransport(entity.getTransport());
         orderDTO.setStatus(entity.getStatus());
+        orderDTO.setDeclineReason(entity.getDeclineReason());
         if (entity.getDeliveryLocation() != null) {
             orderDTO.setDeliveryLocation(locationMapper.map(entity.getDeliveryLocation()));
         }
@@ -54,7 +55,7 @@ public class OrderMapperImplement implements OrderMapper {
         entity.setDealAmount(orderDTO.getDealAmount());
         entity.setDate(LocalDate.now());
         entity.setTransport(orderDTO.getTransport());
-        //entity.setDeliveryLocation(locationMapper.map(orderDTO.getDeliveryLocation()));
+        entity.setDeclineReason(orderDTO.getDeclineReason());
         return entity;
     }
 }

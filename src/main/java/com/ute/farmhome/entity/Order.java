@@ -43,4 +43,5 @@ public class Order implements Serializable {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "location_id")
     private Location deliveryLocation;
+    String declineReason;
 }

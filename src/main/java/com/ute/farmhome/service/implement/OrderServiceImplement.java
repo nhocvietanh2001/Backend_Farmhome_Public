@@ -153,8 +153,8 @@ public class OrderServiceImplement implements OrderService {
         NotificationNote notificationNote = new NotificationNote("Your order has been accepted",
                 "Order with the product name '" + fruit.getName() + "' has been accepted!",
                 fruit.getImages().get(0).getUrl(),
-                "order",
-                order.getId());
+                "history",
+                historyDTOSaved.getId());
         notificationHistoryService.save(notificationNote, order.getMerchant());
         //notify user order has been accepted if user login with phone and have notification registration token
         userLoginService.findByUserId(order.getMerchant().getId()).ifPresent(userLogin -> {
@@ -187,22 +187,27 @@ public class OrderServiceImplement implements OrderService {
     public void deleteOrder(int id, String reason) {
         Order order = getById(id);
         Fruit fruit = fruitService.findFruitById(order.getFruit().getId());
+
+        order.setStatus(statusService.getCanceledStatusProduct());
+
         NotificationNote notificationNote;
         if (reason != null) {
             notificationNote = new NotificationNote("Your order has been declined",
                     "Order with the product name '" + fruit.getName() + "' has been declined with the reason: '" + reason + "'",
                     null,
-                    "home",
-                    0);
+                    "order",
+                    id);
             notificationHistoryService.save(notificationNote, order.getMerchant());
+            order.setDeclineReason(reason);
         } else {
             notificationNote = new NotificationNote("Your order has been declined",
                     "Order with the product name '" + fruit.getName() + "' has been declined!",
                     null,
-                    "home",
-                    0);
+                    "order",
+                    id);
             notificationHistoryService.save(notificationNote, order.getMerchant());
         }
+
         userLoginService.findByUserId(order.getMerchant().getId()).ifPresent(userLogin -> {
             try {
                 messagingService.sendNotification(notificationNote, userLogin.getDeviceId());
@@ -210,7 +215,7 @@ public class OrderServiceImplement implements OrderService {
                 e.printStackTrace();
             }
         });
-        orderRepository.deleteById(id);
+        orderRepository.save(order);
     }
 
     private Order getById(int id) {
