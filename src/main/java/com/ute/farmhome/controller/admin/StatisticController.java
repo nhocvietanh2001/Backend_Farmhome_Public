@@ -46,7 +46,7 @@ public class StatisticController {
         return ResponseEntity.ok(statisticService.statisticDate(day));
     }
 
-    @GetMapping("stats/")
+    @GetMapping("stats")
     public ResponseEntity<?> getStats() {
         return ResponseEntity.ok(statisticService.getStats());
     }
