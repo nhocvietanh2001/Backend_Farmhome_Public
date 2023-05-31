@@ -4,6 +4,7 @@ import com.ute.farmhome.dto.UserChangePassDTO;
 import com.ute.farmhome.dto.UserCreateDTO;
 import com.ute.farmhome.entity.Role;
 import com.ute.farmhome.entity.StatusUser;
+import com.ute.farmhome.exception.ResourceNotFound;
 import com.ute.farmhome.repository.RoleRepository;
 import com.ute.farmhome.repository.StatusUserRepository;
 import com.ute.farmhome.service.UserService;
@@ -21,6 +22,7 @@ import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin/user")
@@ -32,9 +34,22 @@ public class UserControllerAdmin {
     private RoleRepository roleRepository;
     @Autowired
     private StatusUserRepository statusUserRepository;
-    @PostMapping(value = "create", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> createUser(@RequestPart("user") String user, @RequestPart(value = "avatar", required = false) MultipartFile avatar) {
+    @PostMapping(value = "createMerchant", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> createMerchant(@RequestPart("user") String user,
+                                            @RequestPart(value = "avatar", required = false) MultipartFile avatar) {
         UserCreateDTO userCreateDTO = userService.readJson(user, avatar);
+        List<Role> roles = new ArrayList<>();
+        roles.add(roleRepository.findById(1).orElseThrow(() -> new ResourceNotFound("Role", "id", String.valueOf(1))));
+        userCreateDTO.setRoles(roles);
+        return ResponseEntity.ok(userService.createUser(userCreateDTO));
+    }
+    @PostMapping(value = "createFarmer", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> createFarmer(@RequestPart("user") String user,
+                                          @RequestPart(value = "avatar", required = false) MultipartFile avatar) {
+        UserCreateDTO userCreateDTO = userService.readJson(user, avatar);
+        List<Role> roles = new ArrayList<>();
+        roles.add(roleRepository.findById(2).orElseThrow(() -> new ResourceNotFound("Role", "id", String.valueOf(2))));
+        userCreateDTO.setRoles(roles);
         return ResponseEntity.ok(userService.createUser(userCreateDTO));
     }
     @GetMapping()
